@@ -157,12 +157,13 @@ if(!!config.twilioVerifyServiceId) {
         });
       }
 
+      const carrierInfo = await twilio.lookups.phoneNumbers(phone).fetch({type: 'carrier'})
+      if(carrierInfo.carrier.type !== 'mobile'){
+        throw new Error('carrier is not mobile')
+      }
+
       const smsCheck = await verify.verifications.create({to: phone, channel: 'sms'})
       console.log(smsCheck)
-
-      if (smsCheck.lookup.carrier.type !== 'mobile') {
-        throw new Error('carrier is not mobile for '+phone)
-      }
       renderIndex(res, {phone});
     }catch(e){
       console.log(e)
