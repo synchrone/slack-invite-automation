@@ -1,26 +1,53 @@
 const express = require('express');
 const router = express.Router();
 const request = require('request');
+const sanitize = require('sanitize');
 
 const config = require('../config');
 const { badge } = require('../lib/badge');
 
-const sanitize = require('sanitize');
+let twilio = require('twilio')(config.twilioAccountSid, config.twilioAuthToken);
+const verify = twilio.verify.services(config.twilioVerifyServiceId)
+const syncDoc = twilio.sync.services(config.twilioSyncServiceId).documents(config.twilioSyncDocId)
 
-router.get('/', function(req, res) {
+let renderIndex = function(res, params = {}) {
   res.setLocale(config.locale);
-  res.render('index', { community: config.community,
-                        tokenRequired: !!config.inviteToken,
-                        recaptchaSiteKey: config.recaptchaSiteKey });
-});
+  res.render('index', { ...params,
+    community: config.community,
+    tokenRequired: !!config.inviteToken,
+    recaptchaSiteKey: config.recaptchaSiteKey,
+    smsRequired: !!config.twilioVerifyServiceId });
+};
 
-router.post('/invite', function(req, res) {
+router.get('/', (req, res) => renderIndex(res));
+
+router.get('/oauth', (req, res) => {
+  //this endpoint helps getting the slacktoken for config
+  if(!req.query.code){
+    res.redirect(`https://${config.slackUrl}/oauth?client_id=${config.slackClientId}&scope=client&user_scope=admin&redirect_uri=${config.inviterUrl}/oauth`)
+  }else{
+    request.post({
+      url: 'https://'+ config.slackUrl + '/api/oauth.access',
+      form: {
+        code: req.query.code,
+        client_id: config.slackClientId,
+        client_secret: config.slackClientSecret
+      }
+    }, (err, httpResp, body) => {
+      res.status(httpResp.statusCode).send(body)
+    })
+  }
+})
+
+router.post('/invite', async function(req, res) {
   if (req.body.email && (!config.inviteToken || (!!config.inviteToken && req.body.token === config.inviteToken))) {
-    function doInvite() {
+    const email = req.body.email;
+
+    function doInvite(cb) {
       request.post({
           url: 'https://'+ config.slackUrl + '/api/users.admin.invite',
           form: {
-            email: req.body.email,
+            email: email,
             token: config.slacktoken,
             set_active: true
           }
@@ -34,7 +61,7 @@ router.post('/invite', function(req, res) {
           if (body.ok) {
             res.render('result', {
               community: config.community,
-              message: 'Success! Check &ldquo;'+ req.body.email +'&rdquo; for an invite from Slack.'
+              message: 'Success! Check &ldquo;'+ email +'&rdquo; for an invite from Slack.'
             });
           } else {
             let error = body.error;
@@ -57,31 +84,33 @@ router.post('/invite', function(req, res) {
               isFailed: true
             });
           }
+          cb(body.ok)
         });
     }
-    if (!!config.recaptchaSiteKey && !!config.recaptchaSecretKey) {
-      request.post({
-        url: 'https://www.google.com/recaptcha/api/siteverify',
-        form: {
-          response: req.body['g-recaptcha-response'],
-          secret: config.recaptchaSecretKey
-        }
-      }, function(err, httpResponse, body) {
-        if (typeof body === "string") {
-          body = JSON.parse(body);
-        }
 
-        if (body.success) {
-          doInvite();
-        } else {
-          error = 'Invalid captcha.';
-          res.render('result', {
-            community: config.community,
-            message: 'Failed! ' + error,
-            isFailed: true
-          });
-        }
-      });
+    if(!!config.twilioVerifyServiceId) {
+      let phone = req.body.phone;
+      const check = await verify.verificationChecks.create({
+        to: phone,
+        code: req.body.smsToken
+      })
+      console.log(check)
+
+      if (check.status === 'approved' || config.twilioDebug) {
+        doInvite(async ok => {
+          if(!ok && !config.twilioDebug) return;
+          const data = (await syncDoc.fetch()).data
+          console.log('sync data', data)
+          data[phone] = email
+          await syncDoc.update({data})
+        });
+      } else {
+        return res.render('result', {
+          community: config.community,
+          message: 'Failed to verify SMS',
+          isFailed: true
+        });
+      }
     } else {
       doInvite();
     }
@@ -108,6 +137,37 @@ router.post('/invite', function(req, res) {
     });
   }
 });
+
+if(!!config.twilioVerifyServiceId) {
+  router.post('/sendSms', async (req, res) => {
+    const phone = req.body.phone.replace(/[^0-9+]/g, '');
+    try {
+      const doc = await syncDoc.fetch()
+      if (doc.data[phone] !== undefined) {
+        return res.render('result', {
+          community: config.community,
+          message: phone + ' is already registered to someone',
+          isFailed: true
+        });
+      }
+
+      const smsCheck = await verify.verifications.create({to: phone, channel: 'sms'})
+      console.log(smsCheck)
+
+      if (smsCheck.lookup.carrier.type !== 'mobile') {
+        throw new Error('carrier is not mobile for '+phone)
+      }
+      renderIndex(res, {phone});
+    }catch(e){
+      console.log(e)
+      res.render('result', {
+        community: config.community,
+        message: 'Cannot send SMS verification to ' + phone,
+        isFailed: true
+      });
+    }
+  });
+}
 
 router.get('/badge.svg', (req, res) => {
   request.get({
