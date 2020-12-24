@@ -10,6 +10,7 @@ html
     #wrapper
       .main
         .header
-          h1
-            strong #{community}
+          a(href="javascript:history.back()")#result-h1
+            h1
+              strong #{community}
           h2(class=isFailed?'error':'') !{message}

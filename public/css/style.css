@@ -159,6 +159,10 @@ a:hover {
   color: #7EB6FF;
 }
 
+a#result-h1 {
+	text-decoration: none;
+}
+
 .g-recaptcha, .g-recaptcha > div {
   margin: auto;
 }
