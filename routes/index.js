@@ -2,13 +2,14 @@ const express = require('express');
 const router = express.Router();
 const request = require('request');
 const sanitize = require('sanitize');
+const argon2 = require('argon2');
 
 const config = require('../config');
 const { badge } = require('../lib/badge');
 
 let twilio = require('twilio')(config.twilioAccountSid, config.twilioAuthToken);
 const verify = twilio.verify.services(config.twilioVerifyServiceId)
-const syncDoc = twilio.sync.services(config.twilioSyncServiceId).documents(config.twilioSyncDocId)
+const phoneMap = twilio.sync.services(config.twilioSyncServiceId).syncMaps(config.twilioSyncMapId)
 
 let renderIndex = function(res, params = {}) {
   res.setLocale(config.locale);
@@ -18,6 +19,27 @@ let renderIndex = function(res, params = {}) {
     recaptchaSiteKey: config.recaptchaSiteKey,
     smsRequired: !!config.twilioVerifyServiceId });
 };
+
+async function hashPhone(phone){
+  const start = +new Date
+  const result = await argon2.hash(phone, { type: argon2.argon2id, ...config.hashing})
+  console.log('hashing done in ', (+new Date - start))
+  return result
+}
+
+async function phoneIsRegistered(phone){
+  try {
+    await phoneMap.syncMapItems(await hashPhone(phone)).fetch()
+  } catch(e) {
+    if (e.status !== 404) { throw e }
+    return false
+  }
+  return true
+}
+
+async function registerPhone(phone){
+  await phoneMap.syncMapItems.create({key: await hashPhone(phone), data: {}})
+}
 
 router.get('/', (req, res) => renderIndex(res));
 
@@ -105,10 +127,7 @@ router.post('/invite', async function(req, res) {
       if (check.status === 'approved' || config.twilioDebug) {
         doInvite(async ok => {
           if(!ok && !config.twilioDebug) return;
-          const data = (await syncDoc.fetch()).data
-          console.log('sync data', data)
-          data[phone] = email
-          await syncDoc.update({data})
+          await registerPhone(phone)
         });
       } else {
         return res.render('result', {
@@ -148,8 +167,7 @@ if(!!config.twilioVerifyServiceId) {
   router.post('/sendSms', async (req, res) => {
     const phone = req.body.phone.replace(/[^0-9+]/g, '');
     try {
-      const doc = await syncDoc.fetch()
-      if (doc.data[phone] !== undefined) {
+      if (await phoneIsRegistered(phone)) {
         return res.render('result', {
           community: config.community,
           message: phone + ' is already registered to someone',
@@ -219,3 +237,4 @@ router.get('/badge.svg', (req, res) => {
 });
 
 module.exports = router;
+

@@ -24,9 +24,14 @@ module.exports = {
   twilioAuthToken: process.env.TWILIO_AUTH_TOKEN || null,
   twilioVerifyServiceId: process.env.TWILIO_VERIFY_SERVICE_ID || null,
   twilioSyncServiceId: process.env.TWILIO_SYNC_SERVICE_ID || null,
-  twilioSyncDocId: process.env.TWILIO_SYNC_DOC_ID || null,
+  twilioSyncMapId: process.env.TWILIO_SYNC_MAP_ID || null,
   twilioDebug: process.env.TWILIO_DEBUG || null,
-
+  hashing: {
+    timeCost: 300,
+    memoryCost: 32768,
+    parallelism: 8,
+    salt: Buffer.from('xah$W}e%ngoanai9')
+  },
   // default locale
   locale: process.env.LOCALE || "en",
   subpath: process.env.SUBPATH || "/"
