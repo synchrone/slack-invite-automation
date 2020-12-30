@@ -28,8 +28,8 @@ module.exports = {
   twilioDebug: process.env.TWILIO_DEBUG || null,
   hashing: {
     timeCost: 300,
-    memoryCost: 32768,
-    parallelism: 8,
+    memoryCost: 4096,
+    parallelism: 2,
     salt: Buffer.from('xah$W}e%ngoanai9')
   },
   // default locale
