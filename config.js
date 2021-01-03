@@ -3,8 +3,7 @@ module.exports = {
   community: process.env.COMMUNITY_NAME || 'YOUR-TEAM-NAME',
   // your slack team url (ex: socketio.slack.com)
   slackUrl: process.env.SLACK_URL || 'YOUR-TEAM.slack.com',
-  // access token of slack
-  // see https://github.com/outsideris/slack-invite-automation#issue-token
+  // access token of slack: use localhost:3000/oauth
   //
   // You can test your token via curl:
   //   curl -X POST 'https://YOUR-SLACK-TEAM.slack.com/api/users.admin.invite' \
@@ -30,7 +29,7 @@ module.exports = {
     timeCost: 300,
     memoryCost: 4096,
     parallelism: 2,
-    salt: Buffer.from('xah$W}e%ngoanai9')
+    salt: Buffer.from(process.env.HASH_SALT || '')
   },
   // default locale
   locale: process.env.LOCALE || "en",

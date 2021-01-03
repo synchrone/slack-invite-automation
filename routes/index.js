@@ -3,6 +3,7 @@ const router = express.Router();
 const request = require('request');
 const sanitize = require('sanitize');
 const argon2 = require('argon2');
+const sha256 = require('crypto').createHash('sha256');
 
 const config = require('../config');
 const { badge } = require('../lib/badge');
@@ -24,12 +25,14 @@ async function hashPhone(phone){
   const start = +new Date
   const result = await argon2.hash(phone, { type: argon2.argon2id, ...config.hashing})
   console.log('hashing done in ', (+new Date - start))
-  return result
+  const hex = sha256.update(result).digest('hex') // make sure hash is alphanumeric, as twilio doesn't like special symbols in keys
+  return hex
 }
 
 async function phoneIsRegistered(phone){
   try {
-    await phoneMap.syncMapItems(await hashPhone(phone)).fetch()
+    const hashedPhone = await hashPhone(phone);
+    await phoneMap.syncMapItems(hashedPhone).fetch()
   } catch(e) {
     if (e.status !== 404) { throw e }
     return false
@@ -38,7 +41,8 @@ async function phoneIsRegistered(phone){
 }
 
 async function registerPhone(phone){
-  await phoneMap.syncMapItems.create({key: await hashPhone(phone), data: {}})
+  const hashedPhone = await hashPhone(phone);
+  await phoneMap.syncMapItems.create({key: hashedPhone, data: {}})
 }
 
 router.get('/', (req, res) => renderIndex(res));
@@ -119,12 +123,12 @@ router.post('/invite', async function(req, res) {
           to: phone,
           code: req.body.smsToken
         })
-        console.log(check)
+        // console.log(check)
       }catch(e){
-        console.log(e)
+        // console.log(e)
       }
 
-      if (check.status === 'approved' || config.twilioDebug) {
+      if ((check && check.status === 'approved') || config.twilioDebug) {
         doInvite(async ok => {
           if(!ok && !config.twilioDebug) return;
           await registerPhone(phone)
@@ -181,10 +185,10 @@ if(!!config.twilioVerifyServiceId) {
       }
 
       const smsCheck = await verify.verifications.create({to: phone, channel: 'sms'})
-      console.log(smsCheck)
+      // console.log(smsCheck)
       renderIndex(res, {phone});
     }catch(e){
-      console.log(e)
+      // console.log(e)
       res.render('result', {
         community: config.community,
         message: 'Cannot send SMS verification to ' + phone,
