@@ -12,6 +12,14 @@ const routes = require('./routes/index');
 
 const app = express();
 
+function requireHTTPS(req, res, next) {
+    // The 'x-forwarded-proto' check is for Heroku
+    if (!req.secure && req.get('x-forwarded-proto') !== 'https' && process.env.NODE_ENV !== "development") {
+        return res.redirect('https://' + req.get('host') + req.url);
+    }
+    next();
+}
+
 i18n.configure({
     defaultLocale: "en",
     directory: __dirname + '/locales',
@@ -30,6 +38,9 @@ app.set('view engine', 'pug');
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
+if(config.requireHttps) {
+    app.use(requireHTTPS);
+}
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());

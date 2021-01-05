@@ -2,15 +2,11 @@ const express = require('express');
 const router = express.Router();
 const request = require('request');
 const sanitize = require('sanitize');
-const argon2 = require('argon2');
-const sha256 = require('crypto').createHash('sha256');
 
 const config = require('../config');
 const { badge } = require('../lib/badge');
-
-let twilio = require('twilio')(config.twilioAccountSid, config.twilioAuthToken);
-const verify = twilio.verify.services(config.twilioVerifyServiceId)
-const phoneMap = twilio.sync.services(config.twilioSyncServiceId).syncMaps(config.twilioSyncMapId)
+const twilio = require('twilio')(config.twilioAccountSid, config.twilioAuthToken);
+const { verify, registerPhone, phoneIsRegistered} = require('../lib/verification');
 
 let renderIndex = function(res, params = {}) {
   res.setLocale(config.locale);
@@ -21,29 +17,6 @@ let renderIndex = function(res, params = {}) {
     smsRequired: !!config.twilioVerifyServiceId });
 };
 
-async function hashPhone(phone){
-  const start = +new Date
-  const result = await argon2.hash(phone, { type: argon2.argon2id, ...config.hashing})
-  console.log('hashing done in ', (+new Date - start))
-  const hex = sha256.update(result).digest('hex') // make sure hash is alphanumeric, as twilio doesn't like special symbols in keys
-  return hex
-}
-
-async function phoneIsRegistered(phone){
-  try {
-    const hashedPhone = await hashPhone(phone);
-    await phoneMap.syncMapItems(hashedPhone).fetch()
-  } catch(e) {
-    if (e.status !== 404) { throw e }
-    return false
-  }
-  return true
-}
-
-async function registerPhone(phone){
-  const hashedPhone = await hashPhone(phone);
-  await phoneMap.syncMapItems.create({key: hashedPhone, data: {}})
-}
 
 router.get('/', (req, res) => renderIndex(res));
 
@@ -188,7 +161,7 @@ if(!!config.twilioVerifyServiceId) {
       // console.log(smsCheck)
       renderIndex(res, {phone});
     }catch(e){
-      // console.log(e)
+      console.log(e)
       res.render('result', {
         community: config.community,
         message: 'Cannot send SMS verification to ' + phone,
