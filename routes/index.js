@@ -157,7 +157,7 @@ if(!!config.twilioVerifyServiceId) {
         throw new Error('carrier is not mobile')
       }
 
-      const smsCheck = await verify.verifications.create({to: phone, channel: 'sms'})
+      const smsCheck = await verify.verifications.create({to: phone, channel: 'sms', locale: config.locale})
       // console.log(smsCheck)
       renderIndex(res, {phone});
     }catch(e){
