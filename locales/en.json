@@ -4,5 +4,6 @@
 	"ENTER_TOKEN": "Enter the invite token you were given",
 	"TITLE": "Join the %s community on Slack!",
 	"ENTER_PHONE": "Phone number",
-	"SMS_TOKEN": "SMS Code (6 digits)"
+	"SMS_TOKEN": "SMS Code (6 digits)",
+	"JOIN": "JOIN"
 }
