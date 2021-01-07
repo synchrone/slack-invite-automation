@@ -16,13 +16,12 @@ html
         .content
           .information
             form(method="POST", action=phone ? 'invite' : 'sendSms')#join-form.form
-              if smsRequired && !phone
+              if !phone
                 input(type="tel", name="phone", autofocus, placeholder=__('ENTER_PHONE')).field
               else
                 input(type="email", name="email", autofocus, placeholder=__('ENTER_EMAIL'))#slack-email.field
-                if smsRequired
-                    input(type="hidden", name="phone", value=phone).field
-                    input(type="text", pattern="[0-9]{6}", maxlength=6, required, name="smsToken", placeholder=__('SMS_TOKEN')).field
+                input(type="hidden", name="phone", value=phone).field
+                input(type="text", pattern="[0-9]{6}", maxlength=6, required, name="smsToken", placeholder=__('SMS_TOKEN')).field
 
               if tokenRequired
                 input(type="text", name="token", placeholder=__('ENTER_TOKEN'))#slack-token.field

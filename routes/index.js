@@ -5,16 +5,14 @@ const sanitize = require('sanitize');
 
 const config = require('../config');
 const { badge } = require('../lib/badge');
-const twilio = require('twilio')(config.twilioAccountSid, config.twilioAuthToken);
-const { verify, registerPhone, phoneIsRegistered} = require('../lib/verification');
+const { sendVerification, checkVerification, registerPhone, phoneIsRegistered} = require('../lib/verification');
 
 let renderIndex = function(res, params = {}) {
   res.setLocale(config.locale);
   res.render('index', { ...params,
     community: config.community,
     tokenRequired: !!config.inviteToken,
-    recaptchaSiteKey: config.recaptchaSiteKey,
-    smsRequired: !!config.twilioVerifyServiceId });
+    recaptchaSiteKey: config.recaptchaSiteKey });
 };
 
 
@@ -87,34 +85,18 @@ router.post('/invite', async function(req, res) {
         });
     }
 
-    if(!!config.twilioVerifyServiceId) {
-      let phone = req.body.phone;
-      let check = {status: 'not_found'}
-
-      try {
-        check = await verify.verificationChecks.create({
-          to: phone,
-          code: req.body.smsToken
-        })
-        // console.log(check)
-      }catch(e){
-        // console.log(e)
-      }
-
-      if ((check && check.status === 'approved') || config.twilioDebug) {
-        doInvite(async ok => {
-          if(!ok && !config.twilioDebug) return;
-          await registerPhone(phone)
-        });
-      } else {
-        return res.render('result', {
-          community: config.community,
-          message: 'Failed to verify SMS',
-          isFailed: true
-        });
-      }
+    let phone = req.body.phone;
+    if (await checkVerification(phone, req.body.smsToken)) {
+      doInvite(async ok => {
+        if(!ok && !config.twilioDebug) return;
+        await registerPhone(phone)
+      });
     } else {
-      doInvite();
+      return res.render('result', {
+        community: config.community,
+        message: 'Failed to verify SMS',
+        isFailed: true
+      });
     }
   } else {
     const errMsg = [];
@@ -140,36 +122,26 @@ router.post('/invite', async function(req, res) {
   }
 });
 
-if(!!config.twilioVerifyServiceId) {
-  router.post('/sendSms', async (req, res) => {
-    const phone = req.body.phone.replace(/[^0-9+]/g, '');
-    try {
-      if (await phoneIsRegistered(phone)) {
-        return res.render('result', {
-          community: config.community,
-          message: phone + ' is already registered to someone',
-          isFailed: true
-        });
-      }
+router.post('/sendSms', async (req, res) => {
+  const phone = req.body.phone.replace(/[^0-9+]/g, '');
+    if (await phoneIsRegistered(phone)) {
+      return res.render('result', {
+        community: config.community,
+        message: phone + ' is already registered to someone',
+        isFailed: true
+      });
+    }
 
-      const carrierInfo = await twilio.lookups.phoneNumbers(phone).fetch({type: 'carrier'})
-      if(carrierInfo.carrier.type !== 'mobile'){
-        throw new Error('carrier is not mobile')
-      }
-
-      const smsCheck = await verify.verifications.create({to: phone, channel: 'sms', locale: config.locale})
-      // console.log(smsCheck)
+    if (await sendVerification(phone)) {
       renderIndex(res, {phone});
-    }catch(e){
-      console.log(e)
+    } else {
       res.render('result', {
         community: config.community,
         message: 'Cannot send SMS verification to ' + phone,
         isFailed: true
       });
     }
-  });
-}
+});
 
 router.get('/badge.svg', (req, res) => {
   request.get({
