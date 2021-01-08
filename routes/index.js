@@ -4,6 +4,7 @@ const request = require('request');
 const sanitize = require('sanitize');
 
 const config = require('../config');
+const {verifyRecaptcha} = require("../lib/recaptcha");
 const { badge } = require('../lib/badge');
 const { sendVerification, checkVerification, registerPhone, phoneIsRegistered} = require('../lib/verification');
 
@@ -130,6 +131,11 @@ router.post('/sendSms', async (req, res) => {
         message: phone + ' is already registered to someone',
         isFailed: true
       });
+    }
+    if(config.recaptchaSecretKey){
+      if(!await verifyRecaptcha(req.body['g-recaptcha-response'], req.socket.remoteAddress)){
+        return res.redirect('/')
+      }
     }
 
     if (await sendVerification(phone)) {

@@ -26,7 +26,7 @@ html
               if tokenRequired
                 input(type="text", name="token", placeholder=__('ENTER_TOKEN'))#slack-token.field
               input(type="submit", value=__('JOIN')).submit
-              if !!recaptchaSiteKey
+              if !!recaptchaSiteKey && !phone
                 div(class="g-recaptcha", data-sitekey=recaptchaSiteKey)
     if !!recaptchaSiteKey
        script(src='https://www.google.com/recaptcha/api.js')
