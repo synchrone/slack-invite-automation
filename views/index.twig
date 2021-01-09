@@ -54,26 +54,26 @@
                                 </div>
                                 <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2 pr-5">
                                     <label class="block mb-1" for="form-phone">SMS Code</label>
-                                    <input required name="smsToken" class="w-full h-10 px-3 text-base placeholder-gray-600{% if isFailedSms %} border border-red-700{% endif%} rounded-lg border" type="number" pattern="[0-9]{6}" id="form-smsToken" placeholder="012345" />
+                                    <input required name="smsToken" class="w-full h-10 px-3 text-base placeholder-gray-600{% if isFailedSms %} border border-red-700{% endif%} rounded-lg border" type="text" inputmode="numeric" pattern="[0-9]{6}" id="form-smsToken" placeholder="012345" />
                                     {% if isFailedSms %}
                                         <span class="text-xs text-red-700">{{ messageSms }}.</span>
                                     {% endif %}
                                 </div>
                                 <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2 pr-5">
-                                    <button style="margin-top: 1.8rem;" class="w-full h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">Join</button>
+                                    <button type="submit" style="margin-top: 1.8rem;" class="w-full h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">Join</button>
                                 </div>
                             </div>
                         {% else %}
                             <div class="flex flex-wrap overflow-hidden">
                                 <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2 pr-5">
                                     <label class="block mb-1" for="form-phone">Phone</label>
-                                    <input name="phone" class="w-full mr-5 h-10 px-3 text-base placeholder-gray-600{% if isFailed %} border border-red-700{% endif%} rounded-lg border" type="text" id="form-phone" placeholder="+49..." />
+                                    <input name="phone" class="w-full mr-5 h-10 px-3 text-base placeholder-gray-600{% if isFailed %} border border-red-700{% endif%} rounded-lg border" type="text" id="form-phone" placeholder="+49..." pattern="\+[0-9]{8,}"/>
                                     {% if isFailed %}
                                         <span class="text-xs text-red-700">{{ message }}.</span>
                                     {% endif %}
                                 </div>
                                 <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2">
-                                    <button style="margin-top: 1.8rem;" data-sitekey="{{ env('RECAPTCHA_SITE') }}" data-callback="onPhoneVerify" data-action="verify" class="g-recaptcha w-full h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">Verify</button>
+                                    <button type="submit" style="margin-top: 1.8rem;" data-sitekey="{{ env('RECAPTCHA_SITE') }}" data-action="verify" class="g-recaptcha w-full h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">Verify</button>
                                 </div>
                             </div>
                             <p class="mb-4 text-sm text-gray-700 pt-2">
@@ -116,28 +116,17 @@
                     <ul class="mb-4 text-sm text-gray-700 list-disc">
                         <li>...</li>
                     </ul>
-                    </p>
                 </div>
             </div>
         </div>
         <div class="flex flex-wrap justify-center">
             <div class="w-full overflow-hidden xl:w-8/12 bg-white rounded-lg rounded-t-none">
                 <div class="mb-5 ml-5 flex items-center justify-center">
-                    <img class="inline" src="/badge.svg" />
+                    <img class="inline" src="/badge.svg" alt="user counter" />
                 </div>
             </div>
         </div>
     </div>
-    <script>
-        function onPhoneVerify(token) {
-            if (!token) {
-                return;
-            }
-
-            document.getElementById("form-phone").setAttribute('value', document.getElementById("form-phone").value);
-            document.getElementById("phone-verification").submit();
-        }
-    </script>
 {% endblock %}
 
 {#                        <div class="text-center">#}

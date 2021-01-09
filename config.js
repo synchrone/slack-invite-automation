@@ -19,7 +19,7 @@ module.exports = {
   // an optional security measure - if both are set, then recaptcha will be used.
   recaptchaSiteKey: process.env.RECAPTCHA_SITE || null,
   recaptchaSecretKey: process.env.RECAPTCHA_SECRET || null,
-  recaptchaThreshold: process.env.RECAPTCHA_THRESHOLD || null,
+  recaptchaThreshold: process.env.RECAPTCHA_THRESHOLD || '0.2',
   // an optional sms verification
   twilioAccountSid: process.env.TWILIO_ACCOUNT_SID || null,
   twilioAuthToken: process.env.TWILIO_AUTH_TOKEN || null,

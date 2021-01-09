@@ -26,7 +26,7 @@ module.exports = async function (req, res) {
     if (!smsToken || !/^[0-9]{6}$/.test(smsToken)) {
         isFailedSms = true;
     }
-    if (!/^([a-zA-Z]+) ([a-zA-Z]+)$/.test(name)) {
+    if (!/ /.test(name)) {
         isFailedName = true;
         messageName = 'Please enter the correct full name in the format: "First Last"'
     }
@@ -37,7 +37,7 @@ module.exports = async function (req, res) {
 
     if (!isFailedSms && !isFailedName && !isFailedEmail) {
         if (await checkVerification(phone, smsToken)) {
-            return invite(name, email, phone, res, async ok => {
+            invite(name, email, phone, res, async ok => {
                 if (!ok && !config.twilioDebug) {
                     return;
                 }
