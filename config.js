@@ -1,4 +1,5 @@
 module.exports = {
+  env: process.env.APP_ENV || 'dev',
   // your community or team name to display on join page.
   community: process.env.COMMUNITY_NAME || 'YOUR-TEAM-NAME',
   // your slack team url (ex: socketio.slack.com)
@@ -18,6 +19,7 @@ module.exports = {
   // an optional security measure - if both are set, then recaptcha will be used.
   recaptchaSiteKey: process.env.RECAPTCHA_SITE || null,
   recaptchaSecretKey: process.env.RECAPTCHA_SECRET || null,
+  recaptchaThreshold: process.env.RECAPTCHA_THRESHOLD || null,
   // an optional sms verification
   twilioAccountSid: process.env.TWILIO_ACCOUNT_SID || null,
   twilioAuthToken: process.env.TWILIO_AUTH_TOKEN || null,

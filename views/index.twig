@@ -1,0 +1,152 @@
+{% extends '_layouts/base.twig' %}
+
+{% block body %}
+
+    <div class="container mx-auto overflow-y-auto">
+        {% if req['success'] %}
+        <div id="flash-message-container" class="flash text-white px-6 py-4 border-0 rounded relative mb-4 bg-teal-500">
+            <span class="text-xl inline-block mr-5 align-middle">
+            <i class="fas fa-bell" />
+            </span>
+            <span class="inline-block align-middle mr-8">
+                <b class="capitalize">Success!</b> Check your email for an invite from Slack.
+            </span>
+            <a href="/" style="text-decoration: none;" class="absolute bg-transparent text-2xl font-semibold leading-none right-0 top-0 mt-4 mr-6 outline-none focus:outline-none">
+                <span id="flash-message" class="flash__cross">×</span>
+            </a>
+        </div>
+        {% endif %}
+        <div class="flex flex-wrap justify-center">
+            <div class="w-full overflow-hidden xl:w-2/5 bg-white bg-cover rounded-lg rounded-tr-none rounded-b-none" style="background-image: url('/images/bg2.jpg')">
+
+            </div>
+            <div class="w-full overflow-hidden xl:w-3/5 bg-white rounded-lg lg:rounded-b-none rounded-tl-none">
+                <div class="px-8 mb-4 text-left">
+                    <div class="mb-4 text-left">
+                        <h3 class="pt-4 mb-2 text-2xl text-center">Join the <strong>{{ env('COMMUNITY_NAME') }}</strong> Slack</h3>
+                        <p class="mb-4 text-sm text-gray-700">
+                            {% if phone %}
+                                Enter the verification code from SMS. Email and your full name for the Slack invitation.
+                            {% else %}
+                                Just enter your phone number to verify that you are a real person. When signup you must provide your real name to meet the community guidelines.
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <form method="POST" action="{% if phone %}/do-invite{% else %}/identity-check{% endif %}" id="phone-verification">
+                        {% if phone %}
+                            <input name="phone" type="hidden" value="{{ phone }}" />
+
+                            <div class="flex flex-wrap overflow-hidden">
+                                <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2 pr-5 pb-5">
+                                    <label class="block mb-1" for="form-name">Your full name</label>
+                                    <input required value="{{ name }}" name="name" class="w-full h-10 px-3 text-base placeholder-gray-600{% if isFailedName %} border border-red-700{% endif%} rounded-lg border" type="text" id="form-name" />
+                                    {% if isFailedName %}
+                                        <span class="text-xs text-red-700">{{ messageName }}.</span>
+                                    {% endif %}
+                                </div>
+                                <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2 pr-5 pb-5">
+                                    <label class="block mb-1" for="form-phone">Email</label>
+                                    <input required value="{{ email }}" name="email" class="w-full h-10 px-3 text-base placeholder-gray-600{% if isFailed %} border border-red-700{% endif%} rounded-lg border" type="email" id="form-email" placeholder="your@corporate-email.org" />
+                                    {% if isFailedEmail %}
+                                        <span class="text-xs text-red-700">{{ messageEmail }}.</span>
+                                    {% endif %}
+                                </div>
+                                <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2 pr-5">
+                                    <label class="block mb-1" for="form-phone">SMS Code</label>
+                                    <input required name="smsToken" class="w-full h-10 px-3 text-base placeholder-gray-600{% if isFailedSms %} border border-red-700{% endif%} rounded-lg border" type="number" pattern="[0-9]{6}" id="form-smsToken" placeholder="012345" />
+                                    {% if isFailedSms %}
+                                        <span class="text-xs text-red-700">{{ messageSms }}.</span>
+                                    {% endif %}
+                                </div>
+                                <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2 pr-5">
+                                    <button style="margin-top: 1.8rem;" class="w-full h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">Join</button>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="flex flex-wrap overflow-hidden">
+                                <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2 pr-5">
+                                    <label class="block mb-1" for="form-phone">Phone</label>
+                                    <input name="phone" class="w-full mr-5 h-10 px-3 text-base placeholder-gray-600{% if isFailed %} border border-red-700{% endif%} rounded-lg border" type="text" id="form-phone" placeholder="+49..." />
+                                    {% if isFailed %}
+                                        <span class="text-xs text-red-700">{{ message }}.</span>
+                                    {% endif %}
+                                </div>
+                                <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2">
+                                    <button style="margin-top: 1.8rem;" data-sitekey="{{ env('RECAPTCHA_SITE') }}" data-callback="onPhoneVerify" data-action="verify" class="g-recaptcha w-full h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">Verify</button>
+                                </div>
+                            </div>
+                            <p class="mb-4 text-sm text-gray-700 pt-2">
+                                By clicking "Verify" you agree with Privacy Policy and Terms of Service below.
+                            </p>
+                        {% endif %}
+                    </form>
+                    <div class="pb-10"></div>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-wrap justify-center">
+            <div class="w-full overflow-hidden xl:w-1/2 bg-white rounded-lg rounded-t-none">
+                <div class="px-8 mb-4 text-left">
+                    <h3 class="pt-4 mb-2 text-2xl">Privacy Policy</h3>
+                    <h2>
+                        General:
+                    </h2>
+                    <ul class="mb-4 text-sm text-gray-700 list-disc">
+                        <li>We do not store your phone number on our servers, and there is no direct connection between your account in Slack and provided phone number.</li>
+                        <li>We do not store your email for the same reason. You will get the invitation link as soon you get the verified phone number.</li>
+                        <li>The pair of email and phone number are not connected together.</li>
+                        <li>You can check the source code of this website <a href="https://github.com/synchrone/slack-invite-automation">here</a>.</li>
+                    </ul>
+
+                    <h2>
+                        Sub-processors:
+                    </h2>
+                    <ul class="mb-4 text-sm text-gray-700 list-disc">
+                        <li><strong>Google</strong>. This site is protected by reCAPTCHA and the Google <a href="https://policies.google.com/privacy">Privacy Policy</a> and <a href="https://policies.google.com/terms">Terms of Service</a> apply.</li>
+                        <li><strong>Twilio</strong>. We use your phone number to verify memberships. We use a third party for these verifications (Twilio.com) - Twilio is a cloud communications platform that provides software developers with building blocks to add communications to web and mobile applications. To view Twilio.com privacy policy please visit: <a href="https://www.twilio.com/legal/privacy">https://www.twilio.com/legal/privacy</a></li>
+                        <li><strong>Heroku</strong>. We hosted across Heroku instances: <a href="https://www.heroku.com/policy/security">https://www.heroku.com/policy/security</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="w-full overflow-hidden xl:w-1/2 bg-white rounded-lg rounded-t-none">
+                <div class="px-8 mb-4 text-left">
+                    <h3 class="pt-4 mb-2 text-2xl">Terms of Service</h3>
+                    <p class="mb-4 text-sm text-gray-700">
+                    <ul class="mb-4 text-sm text-gray-700 list-disc">
+                        <li>...</li>
+                    </ul>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-wrap justify-center">
+            <div class="w-full overflow-hidden xl:w-8/12 bg-white rounded-lg rounded-t-none">
+                <div class="mb-5 ml-5 flex items-center justify-center">
+                    <img class="inline" src="/badge.svg" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function onPhoneVerify(token) {
+            if (!token) {
+                return;
+            }
+
+            document.getElementById("form-phone").setAttribute('value', document.getElementById("form-phone").value);
+            document.getElementById("phone-verification").submit();
+        }
+    </script>
+{% endblock %}
+
+{#                        <div class="text-center">#}
+{#                            <a class="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800" href="./register.html">#}
+{#                                Create an Account!#}
+{#                            </a>#}
+{#                        </div>#}
+{#                        <div class="text-center">#}
+{#                            <a class="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800" href="./index.html">#}
+{#                                Already have an account? Login!#}
+{#                            </a>#}
+{#                        </div>#}

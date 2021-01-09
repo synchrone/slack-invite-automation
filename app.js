@@ -7,10 +7,20 @@ const bodyParser = require('body-parser');
 const i18n = require("i18n");
 
 const config = require('./config');
-
 const routes = require('./routes/index');
 
+const hot = 12;
 const app = express();
+
+const Twig = require('twig');
+
+Twig.extendFunction("env", function(value) {
+    return process.env[value];
+});
+
+Twig.extendFunction("log", function(value) {
+    return console.log(value);
+});
 
 function requireHTTPS(req, res, next) {
     // The 'x-forwarded-proto' check is for Heroku
@@ -33,7 +43,7 @@ app.use(i18n.init);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+app.set('view engine', 'twig');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -50,7 +60,7 @@ app.use(config.subpath, routes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-    const err = new Error('Not Found');
+    const err = new Error(req.i18n.t('Not Found'));
     err.status = 404;
     next(err);
 });
@@ -62,20 +72,21 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);
-        res.render('error', {
+        res.render('index.twig', {
             message: err.message,
-            error: err
+            hasFailed: true
         });
     });
 }
+
 
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    res.render('error', {
+    res.render('index.twig', {
         message: err.message,
-        error: {}
+        hasFailed: true
     });
 });
 
