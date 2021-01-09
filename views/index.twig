@@ -73,7 +73,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2">
-                                    <button type="submit" style="margin-top: 1.8rem;" data-sitekey="{{ env('RECAPTCHA_SITE') }}" data-action="verify" class="g-recaptcha w-full h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">Verify</button>
+                                    <button type="submit" style="margin-top: 1.8rem;" data-sitekey="{{ env('RECAPTCHA_SITE') }}"  data-callback="onPhoneVerify" data-action="verify" class="g-recaptcha w-full h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">Verify</button>
                                 </div>
                             </div>
                             <p class="mb-4 text-sm text-gray-700 pt-2">
@@ -127,6 +127,11 @@
             </div>
         </div>
     </div>
+    <script>
+      function onPhoneVerify(token) {
+        if (token) { document.getElementById("phone-verification").submit(); }
+      }
+    </script>
 {% endblock %}
 
 {#                        <div class="text-center">#}
