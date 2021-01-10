@@ -6,7 +6,7 @@
         {% if req['success'] %}
         <div id="flash-message-container" class="flash text-white px-6 py-4 border-0 rounded relative mb-4 bg-teal-500">
             <span class="text-xl inline-block mr-5 align-middle">
-            <i class="fas fa-bell" />
+            <i class="fas fa-bell" ></i>
             </span>
             <span class="inline-block align-middle mr-8">
                 <b class="capitalize">Success!</b> Check your email for an invite from Slack.
@@ -93,9 +93,8 @@
                         General:
                     </h2>
                     <ul class="mb-4 text-sm text-gray-700 list-disc">
-                        <li>We do not store your phone number on our servers, and there is no direct connection between your account in Slack and provided phone number.</li>
-                        <li>We do not store your email for the same reason. You will get the invitation link as soon you verify the phone number.</li>
-                        <li>The Email is not linked to the phone number.</li>
+                        <li>We do not store your phone number, and there is no direct connection between your account in Slack and the phone number.</li>
+                        <li>We do not store your email either. It is only used to send the slack invitation.</li>
                         <li>You can check the source code and deployment logs <a href="https://github.com/synchrone/slack-invite-automation">here</a>.</li>
                     </ul>
 
