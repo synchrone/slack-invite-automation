@@ -1,46 +1,21 @@
-const config = require('../config');
-const request = require('request');
 const sanitize = require('sanitize');
+const {getUserCounts} = require("../lib/slack");
 const {badge} = require('../lib/badge');
 
-module.exports = function (req, res) {
-    request.get({
-        url: 'https://'+ config.slackUrl + '/api/users.list',
-        qs: {
-            token: config.slacktoken,
-            presence: true
-        }
-    }, function(err, httpResponse, body) {
-        try {
-            body = JSON.parse(body);
-        } catch(e) {
-            return res.status(404).send('');
-        }
-        if (!body.members) {
-            return res.status(404).send('');
-        }
+module.exports = async function (req, res) {
+    const counts = await getUserCounts({channelName: 'general'})
+    const hexColor = /^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+    sanitize.middleware.mixinFilters(req);
 
-        const members = body.members.filter(function(m) {
-            return !m.is_bot;
-        });
-        const total = members.length;
-        const presence = members.filter(function(m) {
-            return m.presence === 'active';
-        }).length;
-
-        const hexColor = /^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
-        sanitize.middleware.mixinFilters(req);
-
-        res.type('svg');
-        res.set('Cache-Control', 'max-age=0, no-cache');
-        res.set('Pragma', 'no-cache');
-        res.send(
-            badge(
-                presence,
-                total,
-                req.queryPattern('colorA', hexColor),
-                req.queryPattern('colorB', hexColor)
-            )
-        );
-    });
+    res.type('svg');
+    res.set('Cache-Control', 'max-age=0, no-cache');
+    res.set('Pragma', 'no-cache');
+    res.send(
+      badge(
+        counts.present,
+        counts.all,
+        req.queryPattern('colorA', hexColor),
+        req.queryPattern('colorB', hexColor)
+      )
+    );
 };

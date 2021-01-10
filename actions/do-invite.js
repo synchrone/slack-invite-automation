@@ -1,8 +1,6 @@
-const config = require('../config');
-
 const {checkVerification, registerPhone } = require('../lib/verification');
 const { render } = require('../lib/render');
-const { invite } = require('../lib/invite');
+const { invite } = require('../lib/slack');
 
 module.exports = async function (req, res) {
     let isFailedSms = false;
@@ -26,7 +24,7 @@ module.exports = async function (req, res) {
     if (!smsToken || !/^[0-9]{6}$/.test(smsToken)) {
         isFailedSms = true;
     }
-    if (!/\p{L}+ \p{L}+/u.test(name)) {
+    if (!/[\p{L}-]+ [\p{L}-]+/u.test(name)) {
         isFailedName = true;
         messageName = 'Please enter your full name'
     }
@@ -37,13 +35,21 @@ module.exports = async function (req, res) {
 
     if (!isFailedSms && !isFailedName && !isFailedEmail) {
         if (await checkVerification(phone, smsToken)) {
-            return invite(name, email, phone, res, async ok => {
-                if (!ok && !config.twilioDebug) {
-                    return;
+            const body = await invite(email, name)
+            if (body.ok) {
+                await registerPhone(phone)
+                return res.redirect('/?success=1')
+            } else {
+                isFailedEmail = true;
+                let error = body.error;
+                if (error === 'already_invited' || error === 'already_in_team') {
+                    messageEmail = 'You were already invited. ' + config.slackUrl
+                } else if (error === 'invalid_email') {
+                    messageEmail = 'The email you entered is an invalid email.'
+                } else {
+                    messageEmail = 'Something has gone wrong. Please contact a system administrator.'
                 }
-
-                await registerPhone(phone);
-            });
+            }
         }
     }
 
