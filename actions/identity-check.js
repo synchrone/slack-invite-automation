@@ -1,6 +1,3 @@
-const config = require('../config')
-const request = require('request')
-
 const {sendVerification, phoneIsRegistered} = require('../lib/verification')
 const {verifyRecaptcha} = require("../lib/recaptcha")
 
@@ -21,7 +18,7 @@ module.exports = async function (req, res) {
         })
     }
 
-    if (!/^\+\d{2,}?[(]?\d{2,}[)]?[-\s\.]?\d{2,}?[-\s\.]?\d{2,}[-\s\.]?\d{0,9}$/im.test(req.body.phone)) {
+    if (!/^\+49[(]?\d{2,}[)]?[-\s\.]?\d{2,}?[-\s\.]?\d{2,}[-\s\.]?\d{0,9}$/im.test(req.body.phone)) {
         return render(res, 'index', {
             message: 'The entered phone number has invalid format. Please use +49XXXXXXXXXXX',
             isFailed: true
