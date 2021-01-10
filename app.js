@@ -13,14 +13,9 @@ const hot = 12;
 const app = express();
 
 const Twig = require('twig');
-
-Twig.extendFunction("env", function(value) {
-    return process.env[value];
-});
-
-Twig.extendFunction("log", function(value) {
-    return console.log(value);
-});
+Twig.cache(config.cacheTemplates)
+Twig.extendFunction("env", (value) => process.env[value]);
+Twig.extendFunction("log", console.log);
 
 function requireHTTPS(req, res, next) {
     // The 'x-forwarded-proto' check is for Heroku

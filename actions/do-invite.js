@@ -28,11 +28,11 @@ module.exports = async function (req, res) {
     }
     if (!/\p{L}+ \p{L}+/u.test(name)) {
         isFailedName = true;
-        messageName = 'Please enter the correct full name in the format: "First Last"'
+        messageName = 'Please enter your full name'
     }
     if (!/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i.test(email)) {
         isFailedEmail = true;
-        messageEmail = 'Please enter the correct Email'
+        messageEmail = 'Please enter a valid Email'
     }
 
     if (!isFailedSms && !isFailedName && !isFailedEmail) {

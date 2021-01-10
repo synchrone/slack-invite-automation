@@ -36,5 +36,6 @@ module.exports = {
   // default locale
   locale: process.env.LOCALE || "en",
   subpath: process.env.SUBPATH || "/",
-  requireHttps: process.env.REQUIRE_HTTPS || ''
+  requireHttps: process.env.REQUIRE_HTTPS || '',
+  cacheTemplates: process.env.CACHE_TEMPLATES === 'true'
 };
