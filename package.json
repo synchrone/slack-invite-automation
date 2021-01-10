@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@slack/events-api": "^2.3.4",
     "@slack/web-api": "^5.15.0",
     "argon2": "^0.27.1",
     "argon2-cli": "^0.25.1",

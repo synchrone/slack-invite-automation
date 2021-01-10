@@ -11,8 +11,9 @@ module.exports = {
   //   --data 'email=EMAIL&token=TOKEN&set_active=true' \
   //   --compressed
   slacktoken: process.env.SLACK_TOKEN || 'YOUR-ACCESS-TOKEN',
-  slackClientId: process.env.SLACK_CLIENT_ID || '185910655719.1598362552627',
-  slackClientSecret: process.env.SLACK_CLIENT_SECRET || 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+  slackClientId: process.env.SLACK_CLIENT_ID,
+  slackClientSecret: process.env.SLACK_CLIENT_SECRET,
+  slackSigningSecret: process.env.SLACK_SIGNING_SECRET,
   inviterUrl: process.env.INVITER_URL || 'http://localhost:3000',
   // an optional security measure - if it is set, then that token will be required to get invited.
   inviteToken: process.env.INVITE_TOKEN || null,
@@ -39,6 +40,7 @@ module.exports = {
   // default locale
   locale: process.env.LOCALE || "en",
   subpath: process.env.SUBPATH || "/",
+  eventsPath: process.env.SUBPATH || "/events",
   requireHttps: process.env.REQUIRE_HTTPS || '',
   cacheTemplates: process.env.CACHE_TEMPLATES === 'true'
 };
