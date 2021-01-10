@@ -129,18 +129,10 @@ $ docker run -it --rm -e COMMUNITY_NAME="YOUR-TEAM-NAME" -e SLACK_URL="YOUR-TEAM
 ```
 
 ## Issue token
-**You should generate the token in admin user, not owner.** If you generate the token in owner user, a `missing_scope` error may occur.
-
-There are two ways to issue the access token.
-
-### Legacy tokens
-1. Visit <https://api.slack.com/custom-integrations/legacy-tokens>.
-1. Click `Create token`.
-
-    ![](screenshots/legacy-token.gif)
+**You should generate the token in admin user, or owner.**
 
 ### OAuth tokens
-1. Visit <https://api.slack.com/apps> and Create New App.
+1. Visit <https://api.slack.com/apps?new_classic_app=1> and Create New Classic App.
 
     ![](screenshots/oauth1.gif)
 
@@ -152,22 +144,17 @@ There are two ways to issue the access token.
 
     ![](screenshots/oauth3.gif)
 
-1. Click "Install App to Workspace".
+1. Get your client_id and client_secret, and configure them in .env or environment variables
 
-    ![](screenshots/oauth4.gif)
-
-1. Visit <https://slack.com/oauth/authorize?&client_id=CLIENT_ID&team=TEAM_ID&install_redirect=install-on-team&scope=admin+client> in your browser and authorize your app.
-    * This form requires the `client` permission. Otherwise, you can see `{"ok":false,"error":"missing_scope","needed":"client","provided":"admin"}` error.
-    * Your `TEAM_ID` is the subdomain for your slack team, e.g. myteam.slack.com - your TEAM_ID is `myteam`.
-    * Your `CLIENT_ID` found in "Basic Information" section for your App.
-    * You will be shown a `Installed App Settings > OAuth Tokens for Your Team` screen.
+1. Launch the app and visit <https://localhost:3000/oauth> in your browser
+    * Authorize app via your workspace
+    * after returning to localhost, copy the token into configuration
     * You can test auto invites with curl by providing the `OAuth Access Token`.
     ```sh
     curl -X POST 'https://myteam.slack.com/api/users.admin.invite' \
    --data 'email=test@email.com&token=OAuthAccessToken&set_active=true' \
    --compressed
    ```
-
     ![](screenshots/basic_info-client_id.png)
 
 ## Badge
@@ -192,7 +179,7 @@ You can use the badge to show status of user in your slack.
 
 ## reCAPTCHA
 Register a new site in [Google reCAPTHCA](https://www.google.com/recaptcha/)
-as reCAPTCHA v2 type.
+as reCAPTCHA v3 type.
 
 ![](screenshots/recaptcha.gif)
 
