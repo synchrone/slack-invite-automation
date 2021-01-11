@@ -11,6 +11,7 @@ const routes = require('./routes/index');
 
 const hot = 12;
 const app = express();
+app.set('trust proxy', 'loopback, linklocal, uniquelocal')
 
 const Twig = require('twig');
 Twig.cache(config.cacheTemplates)
@@ -27,8 +28,7 @@ function requireHTTPS(req, res, next) {
 
 i18n.configure({
     defaultLocale: "en",
-    directory: __dirname + '/locales',
-    autoReload: true
+    directory: __dirname + '/locales'
 });
 
 i18n.setLocale(config.locale);

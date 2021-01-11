@@ -1,10 +1,14 @@
-const {sendVerification, phoneIsRegistered} = require('../lib/verification')
+const {ipIsSafe, sendVerification, phoneIsRegistered} = require('../lib/verification')
 const {verifyRecaptcha} = require("../lib/recaptcha")
 
 const { render } = require('../lib/render')
 
 module.exports = async function (req, res) {
-    if (!await verifyRecaptcha(req.body['g-recaptcha-response'], req.socket.remoteAddress)) {
+    const ip = req.ip
+    const isLocal = req.socket.localAddress === ip
+    const safeIp = isLocal || await ipIsSafe(ip)
+
+    if (!safeIp || !await verifyRecaptcha(req.body['g-recaptcha-response'], ip)) {
         return render(res, 'index', {
             message: 'reCAPTCHA check has failed',
             isFailed: true
@@ -28,7 +32,7 @@ module.exports = async function (req, res) {
     const phone = req.body.phone.replace(/[^0-9+]/g, '')
 
     const isRegistered = await phoneIsRegistered(phone)
-    if (!isRegistered && await sendVerification(phone, {ratelimit: req.socket.remoteAddress})) {
+    if (!isRegistered && await sendVerification(phone, {ratelimit: ip})) {
         render(res, 'index', { phone })
     } else {
         render(res, 'index', {

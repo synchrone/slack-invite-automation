@@ -27,6 +27,7 @@ module.exports = {
   twilioSyncServiceId: process.env.TWILIO_SYNC_SERVICE_ID || null,
   twilioSyncMapId: process.env.TWILIO_SYNC_MAP_ID || null,
   twilioDebug: process.env.TWILIO_DEBUG || null,
+  ipLookup: process.env.IP_LOOKUP,
   hashing: {
     timeCost: 300,
     memoryCost: 4096,
