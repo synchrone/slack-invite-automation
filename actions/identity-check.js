@@ -28,7 +28,7 @@ module.exports = async function (req, res) {
     const phone = req.body.phone.replace(/[^0-9+]/g, '')
 
     const isRegistered = await phoneIsRegistered(phone)
-    if (!isRegistered && await sendVerification(phone)) {
+    if (!isRegistered && await sendVerification(phone, {ratelimit: req.socket.remoteAddress})) {
         render(res, 'index', { phone })
     } else {
         render(res, 'index', {
