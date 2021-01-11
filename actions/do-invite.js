@@ -50,6 +50,8 @@ module.exports = async function (req, res) {
                     messageEmail = 'Something has gone wrong. Please contact a system administrator.'
                 }
             }
+        } else {
+            isFailedSms = true
         }
     }
 

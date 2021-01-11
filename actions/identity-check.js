@@ -7,8 +7,10 @@ module.exports = async function (req, res) {
     const ip = req.ip
     const isLocal = req.socket.localAddress === ip
     const safeIp = isLocal || await ipIsSafe(ip)
+    const captchaOk = await verifyRecaptcha(req.body['g-recaptcha-response'], ip);
 
-    if (!safeIp || !await verifyRecaptcha(req.body['g-recaptcha-response'], ip)) {
+    if (!safeIp || !captchaOk) {
+        console.log('security check failed', {safeIp, captchaOk})
         return render(res, 'index', {
             message: 'reCAPTCHA check has failed',
             isFailed: true
@@ -32,9 +34,11 @@ module.exports = async function (req, res) {
     const phone = req.body.phone.replace(/[^0-9+]/g, '')
 
     const isRegistered = await phoneIsRegistered(phone)
-    if (!isRegistered && await sendVerification(phone, {ratelimit: ip})) {
+    const smsSent = await sendVerification(phone, {ratelimit: ip});
+    if (!isRegistered && smsSent) {
         render(res, 'index', { phone })
     } else {
+        console.log('verification failed', {isRegistered, smsSent})
         render(res, 'index', {
             message: 'Cannot send SMS verification to ' + phone,
             isFailed: true
