@@ -18,7 +18,7 @@ module.exports = async function (req, res) {
         })
     }
 
-    if (!/^\+49[(]?\d{2,}[)]?[-\s\.]?\d{2,}?[-\s\.]?\d{2,}[-\s\.]?\d{0,9}$/im.test(req.body.phone)) {
+    if (!/^\+49\s*[(]?\d{2,}[)]?[-\s\.]?\d{2,}?[-\s\.]?\d{2,}[-\s\.]?\d{0,9}$/im.test(req.body.phone)) {
         return render(res, 'index', {
             message: 'The entered phone number has invalid format. Please use +49XXXXXXXXXXX',
             isFailed: true

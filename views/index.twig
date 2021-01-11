@@ -67,7 +67,7 @@
                             <div class="flex flex-wrap overflow-hidden">
                                 <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2 pr-5">
                                     <label class="block mb-1" for="form-phone">Phone</label>
-                                    <input name="phone" class="w-full mr-5 h-10 px-3 text-base placeholder-gray-600{% if isFailed %} border border-red-700{% endif%} rounded-lg border" type="text" id="form-phone" placeholder="+49..." pattern="\+[0-9]{8,}"/>
+                                    <input name="phone" class="w-full mr-5 h-10 px-3 text-base placeholder-gray-600{% if isFailed %} border border-red-700{% endif%} rounded-lg border" type="text" id="form-phone" placeholder="+49..."/>
                                     {% if isFailed %}
                                         <span class="text-xs text-red-700">{{ message }}.</span>
                                     {% endif %}
