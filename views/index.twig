@@ -131,6 +131,7 @@
     </div>
     <script>
       function onPhoneVerify(token) {
+        if (/HeadlessChrome/i.test(navigator.userAgent) || navigator.webdriver) {return}
         if (token) { document.getElementById("phone-verification").submit(); }
       }
     </script>
