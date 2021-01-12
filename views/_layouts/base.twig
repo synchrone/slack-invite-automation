@@ -9,7 +9,13 @@
     <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,900,700italic|Open+Sans:700italic,400,600,300,700,800"
           rel="stylesheet" type="text/css">
     <link href="/css/styles.css" rel="stylesheet" type="text/css">
-    <script src="https://www.google.com/recaptcha/api.js"></script>
+    {% if captchaV2 %}
+        <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+                async defer>
+        </script>
+    {% else %}
+        <script src="https://www.google.com/recaptcha/api.js"></script>
+    {% endif %}
 </head>
 <body class="flex items-center justify-center mt-20" style="background: #edf2f7;">
 {% block body %}{% endblock %}

@@ -1,7 +1,6 @@
 {% extends '_layouts/base.twig' %}
 
 {% block body %}
-
     <div class="container mx-auto overflow-y-auto">
         {% if req['success'] %}
         <div id="flash-message-container" class="flash text-white px-6 py-4 border-0 rounded relative mb-4 bg-teal-500">
@@ -33,7 +32,7 @@
                         </p>
                     </div>
 
-                    <form method="POST" action="{% if phone %}/do-invite{% else %}/identity-check{% endif %}" id="phone-verification">
+                    <form method="POST" action="{% if phone %}/do-invite{% else %}/identity-check{% if captchaV2 %}?gc2=1{% endif %}{% endif %}" id="phone-verification">
                         {% if phone %}
                             <input name="phone" type="hidden" value="{{ phone }}" />
 
@@ -72,8 +71,14 @@
                                         <span class="text-xs text-red-700">{{ message }}.</span>
                                     {% endif %}
                                 </div>
+                                {% if captchaV2 %}
+                                <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2 pr-5">
+                                    <label class="block mb-1" for="form-phone">reCAPTCHA</label>
+                                    <div id="g-recaptcha"></div>
+                                </div>
+                                {% endif %}
                                 <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2">
-                                    <button type="submit" style="margin-top: 1.8rem;" data-sitekey="{{ env('RECAPTCHA_SITE') }}"  data-callback="onPhoneVerify" data-action="verify" class="g-recaptcha w-full h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">Verify</button>
+                                    <button type="submit" style="margin-top: 1.8rem;" {% if not captchaV2 %}data-sitekey="{{ env('RECAPTCHA_SITE') }}" data-callback="onPhoneVerify" data-action="verify"{% else %}data-callback="onVerifyCallback"{% endif %} class="{% if not captchaV2 %}g-recaptcha{% endif %} w-full h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">Verify</button>
                                 </div>
                             </div>
                             <p class="mb-4 text-sm text-gray-700 pt-2">
@@ -85,6 +90,7 @@
                 </div>
             </div>
         </div>
+
         <div class="flex flex-wrap justify-center">
             <div class="w-full overflow-hidden xl:w-1/2 bg-white rounded-lg rounded-t-none">
                 <div class="px-8 mb-4 text-left">
@@ -129,21 +135,32 @@
             </div>
         </div>
     </div>
-    <script>
-      function onPhoneVerify(token) {
-        if (/HeadlessChrome/i.test(navigator.userAgent) || navigator.webdriver) {return}
-        if (token) { document.getElementById("phone-verification").submit(); }
-      }
-    </script>
-{% endblock %}
+    {% if captchaV2 %}
+        <script type="text/javascript">
+            var response = null;
+            var onVerifyCallback = function(data) {
+                response = data;
+            };
+            var onloadCallback = function() {
+                grecaptcha.render('g-recaptcha', {
+                    'sitekey': '{{ env('RECAPTCHA_SITE_V2') }}',
+                    'callback' : onVerifyCallback,
+                });
+            };
 
-{#                        <div class="text-center">#}
-{#                            <a class="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800" href="./register.html">#}
-{#                                Create an Account!#}
-{#                            </a>#}
-{#                        </div>#}
-{#                        <div class="text-center">#}
-{#                            <a class="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800" href="./index.html">#}
-{#                                Already have an account? Login!#}
-{#                            </a>#}
-{#                        </div>#}
+            document.getElementById("phone-verification").addEventListener("submit", function(evt) {
+                evt.preventDefault();
+
+                if (/HeadlessChrome/i.test(navigator.userAgent) || navigator.webdriver) {return}
+                document.getElementById("phone-verification").submit();
+            });
+        </script>
+    {% else %}
+        <script>
+            function onPhoneVerify(token) {
+                if (/HeadlessChrome/i.test(navigator.userAgent) || navigator.webdriver) {return}
+                if (token) { document.getElementById("phone-verification").submit(); }
+            }
+        </script>
+    {% endif %}
+{% endblock %}

@@ -18,7 +18,9 @@ module.exports = {
   inviteToken: process.env.INVITE_TOKEN || null,
   // an optional security measure - if both are set, then recaptcha will be used.
   recaptchaSiteKey: process.env.RECAPTCHA_SITE || null,
+  recaptchaSiteKeyV2: process.env.RECAPTCHA_SITE_v2 || null,
   recaptchaSecretKey: process.env.RECAPTCHA_SECRET || null,
+  recaptchaSecretKeyV2: process.env.RECAPTCHA_SECRET_V2 || null,
   recaptchaThreshold: process.env.RECAPTCHA_THRESHOLD || '0.2',
   // an optional sms verification
   twilioAccountSid: process.env.TWILIO_ACCOUNT_SID || null,
