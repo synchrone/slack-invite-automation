@@ -9,7 +9,6 @@ const i18n = require("i18n");
 const config = require('./config');
 const routes = require('./routes/index');
 
-const hot = 12;
 const app = express();
 app.set('trust proxy', 'loopback, linklocal, uniquelocal')
 
