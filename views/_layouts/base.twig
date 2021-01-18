@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex">
-    <title>Join the {{ env('COMMUNITY_NAME') }} in Slack today</title>
+    <title>{{ __('Join the %s in Slack today', env('COMMUNITY_NAME')) }}</title>
     <link href="https://unpkg.com/tailwindcss@1.0.4/dist/tailwind.min.css" rel="stylesheet">
     <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,900,700italic|Open+Sans:700italic,400,600,300,700,800"
           rel="stylesheet" type="text/css">
@@ -18,8 +18,47 @@
         <script src="https://www.google.com/recaptcha/api.js"></script>
     {% endif %}
 </head>
-<body class="flex items-center justify-center mt-20" style="background: #edf2f7;">
+<body id="options-body" class="flex items-center justify-center mt-20" style="background: #edf2f7;">
 {% block body %}{% endblock %}
+<div class="absolute inset-y-0 right-0 inline-block text-left">
+    <div>
+        <button type="button" class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500" id="options-menu" aria-haspopup="true" aria-expanded="true">
+            {{ __('Language') }}
+            <!-- Heroicon name: chevron-down -->
+            <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+        </button>
+    </div>
+
+    <div style="display: none" id="lang-dropdown" class="origin-top-right absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+            <a href="/?lang=ru" class="no-underline block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Russian</a>
+            <a href="/?lang=en" class="no-underline block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">English</a>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById("options-menu").addEventListener("click", function(evt) {
+        var dropdown = document.getElementById("lang-dropdown");
+        if (dropdown.style.display === 'none') {
+            dropdown.style.display = 'block';
+        } else {
+            dropdown.style.display = 'none';
+        }
+
+        evt.preventDefault();
+    });
+    document.getElementById('options-body').addEventListener("click", function(evt) {
+        if (evt.target.type === 'button') {
+            return;
+        }
+
+        var dropdown = document.getElementById("lang-dropdown");
+
+        dropdown.style.display = 'none';
+    });
+</script>
 </body>
 </html>
 

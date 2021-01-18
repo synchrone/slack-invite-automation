@@ -22,89 +22,89 @@
             <div class="flex flex-wrap justify-center mb-5">
                 <div class="w-full overflow-hidden xl:w-9/12 bg-white rounded-lg rounded-b-none rounded-tr-none">
                     <div class="ml-5 flex items-center justify-center">
-                        <h3 class="pt-4 mb-2 text-2xl text-center">Welcome to the <strong>{{ env('COMMUNITY_NAME') }}</strong></h3>
+                        <h3 class="pt-4 mb-2 text-2xl text-center">{{ __('Welcome to the %s', '<strong>' ~ env('COMMUNITY_NAME') ~ '</strong>') }}</h3>
                     </div>
                     <div class="ml-2 flex">
-                        <p class="px-4 text-sm text-gray-800 text-lg">We are a fast-growing community of Russian-speaking people who live all around Germany.</p>
+                        <p class="px-4 text-sm text-gray-800 text-lg">{{ __('We are a fast-growing community of Russian-speaking people who live all around Germany.') }}</p>
                     </div>
                     <div class="mb-5 ml-2 flex">
-                        <p class="px-4 text-sm text-gray-800 text-base">You can find useful information on relocation to Germany and living there, share your experience or find help, talk to people with the same interests. We will be happy to see you in with us.</p>
+                        <p class="px-4 text-sm text-gray-800 text-base">{{ __('You can find useful information on relocation to Germany and living there, share your experience or find help, talk to people with the same interests. We will be happy to see you in with us.') }}</p>
                     </div>
                 </div>
-                <div class="w-full overflow-hidden xl:w-3/12 bg-white bg-cover rounded-lg rounded-b-none rounded-tl-none" style="background-image: url('/images/bg3.jpg')">
+                <div class="w-full overflow-hidden xl:w-3/12 bg-white bg-cover rounded-lg rounded-b-none rounded-tl-none" style="background-image: url('/images/bg-1.png')">
 
                 </div>
             </div>
         {% endif %}
 
         <div class="flex flex-wrap justify-center mb-5">
-            <div class="w-full overflow-hidden xl:w-2/5 bg-white bg-cover{% if not isIndex %} rounded-lg rounded-b-none rounded-tr-none{% endif %}" style="background-image: url('/images/bg2.jpg')">
+            <div class="w-full overflow-hidden xl:w-2/5 bg-white bg-cover{% if not isIndex %} rounded-lg rounded-b-none rounded-tr-none{% endif %}" style="background-image: url('/images/cities-set/city-{{ cityIdx }}.png')">
 
             </div>
             <div class="w-full overflow-hidden xl:w-3/5 bg-white{% if not isIndex %} rounded-lg rounded-b-none rounded-tl-none{% endif %}">
                 <div class="px-8 mb-4 text-left">
                     <div class="mb-4 text-left">
-                        <h3 class="pt-4 mb-2 text-2xl text-center">Join the <strong>{{ env('COMMUNITY_NAME') }}</strong> Slack</h3>
+                        <h3 class="pt-4 mb-2 text-2xl text-center">{{ __('Join the %s Slack', '<strong>' ~ env('COMMUNITY_NAME') ~ '</strong>') }}</h3>
                         <p class="mb-4 text-sm text-gray-700">
                             {% if phone %}
-                                Enter the verification code from SMS. Email and your full name for the Slack invitation.
+                                {{ __('Enter the verification code from SMS. Email and your full name for the Slack invitation.') }}
                             {% else %}
-                                Enter your phone number to verify that you are a real person. When signup you must provide your real name to meet the community guidelines.
+                                {{ __('Enter your phone number to verify that you are a real person. When signup you must provide your real name to meet the community guidelines.') }}.
                             {% endif %}
                         </p>
                     </div>
 
                     <form method="POST" action="{% if phone %}/do-invite{% else %}/identity-check{% if captchaV2 %}?gc2=1{% endif %}{% endif %}" id="phone-verification">
                         {% if phone %}
-                            <input name="phone" type="hidden" value="{{ phone }}" />
+                            <input name="phone" type="hidden" value="{{ phone|e }}" />
 
                             <div class="flex flex-wrap overflow-hidden">
                                 <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2 pr-5 pb-5">
-                                    <label class="block mb-1" for="form-name">Your full name</label>
-                                    <input required value="{{ name }}" name="name" class="w-full h-10 px-3 text-base placeholder-gray-600{% if isFailedName %} border border-red-700{% endif%} rounded-lg border" type="text" id="form-name" />
+                                    <label class="block mb-1" for="form-name">{{ __('Your full name') }}</label>
+                                    <input required value="{{ name|e }}" name="name" class="w-full h-10 px-3 text-base placeholder-gray-600{% if isFailedName %} border border-red-700{% endif%} rounded-lg border" type="text" id="form-name" />
                                     {% if isFailedName %}
-                                        <span class="text-xs text-red-700">{{ messageName }}.</span>
+                                        <span class="text-xs text-red-700">{{ __(messageName) }}</span>
                                     {% endif %}
                                 </div>
                                 <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2 pr-5 pb-5">
-                                    <label class="block mb-1" for="form-phone">Email</label>
-                                    <input required value="{{ email }}" name="email" class="w-full h-10 px-3 text-base placeholder-gray-600{% if isFailed %} border border-red-700{% endif%} rounded-lg border" type="email" id="form-email" placeholder="your@corporate-email.org" />
+                                    <label class="block mb-1" for="form-phone">{{ __('Email') }}</label>
+                                    <input required value="{{ email|e }}" name="email" class="w-full h-10 px-3 text-base placeholder-gray-600{% if isFailed %} border border-red-700{% endif%} rounded-lg border" type="email" id="form-email" placeholder="your@corporate-email.org" />
                                     {% if isFailedEmail %}
-                                        <span class="text-xs text-red-700">{{ messageEmail }}.</span>
+                                        <span class="text-xs text-red-700">{{ __(messageEmail) }}</span>
                                     {% endif %}
                                 </div>
                                 <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2 pr-5">
-                                    <label class="block mb-1" for="form-phone">SMS Code</label>
+                                    <label class="block mb-1" for="form-phone">{{ __('SMS Code') }}</label>
                                     <input required name="smsToken" class="w-full h-10 px-3 text-base placeholder-gray-600{% if isFailedSms %} border border-red-700{% endif%} rounded-lg border" type="text" inputmode="numeric" pattern="[0-9]{6}" id="form-smsToken" placeholder="012345" />
                                     {% if isFailedSms %}
-                                        <span class="text-xs text-red-700">{{ messageSms }}.</span>
+                                        <span class="text-xs text-red-700">{{ __(messageSms) }}</span>
                                     {% endif %}
                                 </div>
                                 <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2 pr-5">
-                                    <button type="submit" style="margin-top: 1.8rem;" class="w-full h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">Join</button>
+                                    <button type="submit" style="margin-top: 1.8rem;" class="w-full h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">{{ __('Join') }}</button>
                                 </div>
                             </div>
                         {% else %}
                             <div class="flex flex-wrap overflow-hidden">
                                 <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2 pr-5">
-                                    <label class="block mb-1" for="form-phone">Phone</label>
-                                    <input name="phone" class="w-full mr-5 h-10 px-3 text-base placeholder-gray-600{% if isFailed %} border border-red-700{% endif%} rounded-lg border" type="text" id="form-phone" placeholder="+49..."/>
+                                    <label class="block mb-1" for="form-phone">{{ __('Phone') }}</label>
+                                    <input name="phone" class="w-full mr-5 h-10 px-3 text-base placeholder-gray-600{% if isFailed %} border border-red-700{% endif%} rounded-lg border" type="text" id="form-phone" placeholder="{{ __('+49...') }}"/>
                                     {% if isFailed %}
-                                        <span class="text-xs text-red-700">{{ message }}.</span>
+                                        <span class="text-xs text-red-700">{{ __(message) }}</span>
                                     {% endif %}
                                 </div>
                                 {% if captchaV2 %}
                                     <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2 pr-5">
-                                        <label class="block mb-1" for="form-phone">reCAPTCHA</label>
+                                        <label class="block mb-1" for="form-phone">{{ __('reCAPTCHA') }}</label>
                                         <div id="g-recaptcha"></div>
                                     </div>
                                 {% endif %}
                                 <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2">
-                                    <button type="submit" style="margin-top: 1.8rem;" {% if not captchaV2 %}data-sitekey="{{ env('RECAPTCHA_SITE') }}" data-callback="onPhoneVerify" data-action="verify"{% else %}data-callback="onVerifyCallback"{% endif %} class="{% if not captchaV2 %}g-recaptcha{% endif %} w-full h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">Verify</button>
+                                    <button type="submit" style="margin-top: 1.8rem;" {% if not captchaV2 %}data-sitekey="{{ env('RECAPTCHA_SITE') }}" data-callback="onPhoneVerify" data-action="verify"{% else %}data-callback="onVerifyCallback"{% endif %} class="{% if not captchaV2 %}g-recaptcha{% endif %} w-full h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">{{ __('Verify') }}</button>
                                 </div>
                             </div>
                             <p class="mb-4 text-sm text-gray-700 pt-2">
-                                By clicking "Verify" you agree with <a href="#policy">Privacy Policy</a> and <a href="#tos">Terms of Service</a> below.
+                                {{ __('By clicking "Verify" you agree with <a href="#policy">Privacy Policy</a> and <a href="#tos">Terms of Service</a> below.') }}
                             </p>
                         {% endif %}
                     </form>
@@ -120,36 +120,36 @@
         <div class="flex flex-wrap justify-center">
             <div class="w-full overflow-hidden xl:w-1/2 bg-white rounded-lg rounded-t-none">
                 <div class="px-8 mb-4 text-left">
-                    <h3 class="pt-4 mb-2 text-2xl"><a id="policy"></a>Privacy Policy</h3>
+                    <h3 class="pt-4 mb-2 text-2xl"><a id="policy"></a>{{ __('Privacy Policy') }}</h3>
                     <h2>
-                        General:
+                        {{ __('General:') }}
                     </h2>
                     <ul class="mb-4 text-sm text-gray-700 list-disc">
-                        <li>We do not store your phone number, and there is no direct connection between your account in Slack and the phone number.</li>
-                        <li>We do not store your email either. It is only used to send the slack invitation.</li>
-                        <li>You can check the source code and deployment logs <a href="https://github.com/synchrone/slack-invite-automation">here</a>.</li>
+                        <li>{{ __('We do not store your phone number, and there is no direct connection between your account in Slack and the phone number.') }}</li>
+                        <li>{{ __('We do not store your email either. It is only used to send the slack invitation.') }}</li>
+                        <li>{{ __('You can check the source code and deployment logs <a href="https://github.com/synchrone/slack-invite-automation">here</a>.') }}</li>
                     </ul>
 
                     <h2>
-                        Sub-processors:
+                        {{ __('Sub-processors:') }}
                     </h2>
                     <ul class="mb-4 text-sm text-gray-700 list-disc">
-                        <li><strong>Google</strong>. This site is protected by reCAPTCHA and the Google <a href="https://policies.google.com/privacy">Privacy Policy</a> and <a href="https://policies.google.com/terms">Terms of Service</a> apply.</li>
-                        <li><strong>Twilio</strong>. We use your phone number to verify memberships. We use a third party for these verifications (Twilio.com) - Twilio is a cloud communications platform that provides software developers with building blocks to add communications to web and mobile applications. To view Twilio.com privacy policy please visit: <a href="https://www.twilio.com/legal/privacy">https://www.twilio.com/legal/privacy</a></li>
-                        <li><strong>Heroku</strong>. We host on Heroku instances: <a href="https://www.heroku.com/policy/security">https://www.heroku.com/policy/security</a></li>
+                        <li><strong>{{ __('Google') }}</strong>. {{ __('This site is protected by reCAPTCHA and the Google <a href="https://policies.google.com/privacy">Privacy Policy</a> and <a href="https://policies.google.com/terms">Terms of Service</a> apply.') }}</li>
+                        <li><strong>{{ __('Twilio') }}</strong>. {{ __('We use your phone number to verify memberships. We use a third party for these verifications (Twilio.com) - Twilio is a cloud communications platform that provides software developers with building blocks to add communications to web and mobile applications. To view Twilio.com privacy policy please visit: <a href="https://www.twilio.com/legal/privacy">https://www.twilio.com/legal/privacy</a>') }}</li>
+                        <li><strong>{{ __('Heroku') }}</strong>. {{ __('We host on Heroku instances: <a href="https://www.heroku.com/policy/security">https://www.heroku.com/policy/security</a>') }}</li>
                     </ul>
                 </div>
             </div>
             <div class="w-full overflow-hidden xl:w-1/2 bg-white rounded-lg rounded-t-none">
                 <div class="px-8 mb-4 text-left">
-                    <h3 class="pt-4 mb-2 text-2xl"><a id="tos"></a>Terms of Service</h3>
+                    <h3 class="pt-4 mb-2 text-2xl"><a id="tos"></a>{{ __('Terms of Service') }}</h3>
                     <p class="mb-4 text-sm text-gray-700">
                     <ul class="mb-4 text-sm text-gray-700 list-disc">
-                        <li>We use real names. Pseudo-anonymity has been found to be detrimental to a healthy community.</li>
-                        <li>This community does not have moderators or code of conduct.</li>
-                        <li>Self-regulation is done by way of voting to ban an offensive user.</li>
-                        <li>There is no clear definition of what offensive is. Members decide that collectively.</li>
-                        <li>Fraudulent activity is subject to immediate ban.</li>
+                        <li>{{ __('We use real names. Pseudo-anonymity has been found to be detrimental to a healthy community.') }}</li>
+                        <li>{{ __('This community does not have moderators or code of conduct.') }}</li>
+                        <li>{{ __('Self-regulation is done by way of voting to ban an offensive user.') }}</li>
+                        <li>{{ __('There is no clear definition of what offensive is. Members decide that collectively.') }}</li>
+                        <li>{{ __('Fraudulent activity is subject to immediate ban.') }}</li>
                     </ul>
                 </div>
             </div>
@@ -157,7 +157,7 @@
         <div class="flex flex-wrap justify-center mb-5">
             <div class="w-full overflow-hidden bg-white rounded-lg rounded-t-none">
                 <div class="mb-5 ml-5 flex items-center justify-center">
-                    <img class="inline" src="/badge.svg" alt="user counter" />
+                    <img class="inline" src="/badge.svg" alt="{{ __('User counter') }}" />
                 </div>
             </div>
         </div>
