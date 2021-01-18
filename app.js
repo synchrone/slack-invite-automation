@@ -33,7 +33,7 @@ function requireHTTPS(req, res, next) {
 i18n.configure({
     locales: locales,
     defaultLocale: "en",
-    autoReload: process.env.APP_ENV === 'dev',
+    autoReload: process.env.NODE_ENV === 'development',
     directory: __dirname + '/locales'
 });
 
