@@ -1,11 +1,12 @@
+const __ = require('i18n').__;
 const { render } = require('../lib/render');
 
 module.exports = function (req, res) {
     let usp = [
-        { channel: '#jobs', description: 'Top paid jobs in Berlin, Munich, Hamburg and other cities in Germany.' },
-        { channel: '#auto', description: 'Howtos for Driver\'s license, carsharing and car ownership tips.' },
-        { channel: '#dev', description: 'Leet code discussions, test tasks help, frameworks and language experience exchange.' },
-        { channel: '#diy', description: 'Hobby projects, 3d-printing, renovations, repairs and car/bike maintenance.' },
+        { channel: '#jobs', description: __('Top paid jobs in Berlin, Munich, Hamburg and other cities in Germany.') },
+        { channel: '#auto', description: __('Howtos for Driver\'s license, carsharing and car ownership tips.') },
+        { channel: '#dev', description: __('Leet code discussions, test tasks help, frameworks and language experience exchange.') },
+        { channel: '#diy', description: __('Hobby projects, 3d-printing, renovations, repairs, crafting and instruments sharing.') },
     ];
     let channels = [];
 

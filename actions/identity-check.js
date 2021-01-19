@@ -1,6 +1,6 @@
+const __ = require('i18n').__
 const {ipIsSafe, sendVerification, phoneIsRegistered} = require('../lib/verification')
 const {verifyRecaptcha, verifyRecaptcha2} = require("../lib/recaptcha")
-
 const { render } = require('../lib/render')
 
 module.exports = async function (req, res) {
@@ -18,7 +18,7 @@ module.exports = async function (req, res) {
     if (!safeIp || !captchaOk) {
         console.log('security check failed', {safeIp, captchaOk})
         return render(res, 'index', {
-            message: 'reCAPTCHA check has failed',
+            message: __('reCAPTCHA check has failed'),
             isFailed: true,
             captchaV2: !captchaOk,
         })
@@ -34,7 +34,7 @@ module.exports = async function (req, res) {
 
     if (!/^\+49\s*[(]?\d{2,}[)]?[-\s\.]?\d{2,}?[-\s\.]?\d{2,}[-\s\.]?\d{0,9}$/im.test(req.body.phone)) {
         return render(res, 'index', {
-            message: 'The entered phone number has invalid format. Please use +49XXXXXXXXXXX',
+            message: __('The entered phone number has invalid format. Please use +49XXXXXXXXXXX'),
             isFailed: true,
             captchaV2: (req.query.gc2 !== undefined && req.query.gc2)
         })
@@ -49,7 +49,7 @@ module.exports = async function (req, res) {
     } else {
         console.log('verification failed', {isRegistered, smsSent})
         render(res, 'index', {
-            message: 'Cannot send SMS verification to ' + phone,
+            message: __('Cannot send SMS verification to %s',  phone),
             isFailed: true,
             captchaV2: (req.query.gc2 !== undefined && req.query.gc2)
         })
