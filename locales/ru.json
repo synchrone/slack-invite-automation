@@ -1,8 +1,8 @@
 {
 	"Welcome to the %s": "Добро пожаловать в %s",
-	"We are a fast-growing community of Russian-speaking people who live all around Germany.": "We are a fast-growing community of Russian-speaking people who live all around Germany.",
+	"We are a fast-growing community of Russian-speaking people who live all around Germany.": "Это русскоязычное сообщество в Германии",
 	"You can find useful information on relocation to Germany and living there, share your experience or find help, talk to people with the same interests. We will be happy to see you in with us.": "You can find useful information on relocation to Germany and living there, share your experience or find help, talk to people with the same interests. We will be happy to see you in with us.",
-	"Join the %s Slack": "Join the %s Slack",
+	"Join the %s Slack": "Добавляйтесь в чат",
 	"Enter your phone number to verify that you are a real person. When signup you must provide your real name to meet the community guidelines.": "Enter your phone number to verify that you are a real person. When signup you must provide your real name to meet the community guidelines.",
 	"Phone": "Phone",
 	"+49...": "+49...",
@@ -48,5 +48,11 @@
 	"Salestio": "Salestio",
 	"Offers a one-stop solution where customers can immediately receive a quote, place an repair-order and track the status of it.": "Offers a one-stop solution where customers can immediately receive a quote, place an repair-order and track the status of it.",
 	"High-end sales dashboard that helps grow your business and revenue by exporting your products to global marketplace.": "High-end sales dashboard that helps grow your business and revenue by exporting your products to global marketplace.",
-	"Language": "Language"
+	"Language": "Language",
+	"The phone number should not be empty": "The phone number should not be empty",
+	"reCAPTCHA check has failed": "reCAPTCHA check has failed",
+	"reCAPTCHA": "reCAPTCHA",
+	"Success!": "Success!",
+	"Check your email for an invite from Slack.": "Check your email for an invite from Slack.",
+	"Please enter a valid Email": "Please enter a valid Email"
 }

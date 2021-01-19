@@ -48,5 +48,10 @@
 	"Salestio": "Salestio",
 	"Offers a one-stop solution where customers can immediately receive a quote, place an repair-order and track the status of it.": "Offers a one-stop solution where customers can immediately receive a quote, place an repair-order and track the status of it.",
 	"High-end sales dashboard that helps grow your business and revenue by exporting your products to global marketplace.": "High-end sales dashboard that helps grow your business and revenue by exporting your products to global marketplace.",
-	"Language": "Language"
+	"Language": "Language",
+	"reCAPTCHA check has failed": "reCAPTCHA check has failed",
+	"The SMS verification failed. Please check the code": "The SMS verification failed. Please check the code",
+	"The Email is required": "The Email is required",
+	"The Full name is required": "The Full name is required",
+	"Please enter a valid Email": "Please enter a valid Email"
 }
