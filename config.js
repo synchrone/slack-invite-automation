@@ -29,6 +29,7 @@ module.exports = {
   twilioVerifyServiceId: process.env.TWILIO_VERIFY_SERVICE_ID || null,
   twilioSyncServiceId: process.env.TWILIO_SYNC_SERVICE_ID || null,
   twilioSyncMapId: process.env.TWILIO_SYNC_MAP_ID || null,
+  twilioSyncBanMapId: process.env.TWILIO_SYNC_BAN_MAP_ID,
   twilioDebug: process.env.TWILIO_DEBUG || null,
   ipLookup: process.env.IP_LOOKUP,
   hashing: {

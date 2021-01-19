@@ -6,7 +6,7 @@ const Twig = require('twig')
 const i18n = require("i18n")
 
 const indexAction = require("../actions/index")
-const {oauthAction, oauth2Action} = require("../actions/oauthAction")
+const {oauthAction, oauthBotAction} = require("../actions/oauth")
 const doInviteAction = require("../actions/do-invite")
 const identityCheckAction = require("../actions/identity-check")
 const badgeAction = require("../actions/badge")
@@ -62,11 +62,11 @@ router.use(function(req, res, next) {
 router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({ extended: false }))
 
-router.get('/', (req, res) => indexAction(req, res))
-router.get('/oauth', (req, res) => oauthAction(req, res))
-router.get('/oauth2', (req, res) => oauth2Action(req, res))
-router.post('/do-invite', async (req, res) => doInviteAction(req, res))
-router.post('/identity-check', async (req, res) => identityCheckAction(req, res))
-router.get('/badge.svg', (req, res) => badgeAction(req, res))
+router.get('/', indexAction)
+router.get('/oauth', oauthAction)
+router.get('/oauthBot', oauthBotAction)
+router.post('/do-invite', doInviteAction)
+router.post('/identity-check', identityCheckAction)
+router.get('/badge.svg', badgeAction)
 
 module.exports = router
