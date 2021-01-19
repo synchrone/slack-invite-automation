@@ -1,23 +1,16 @@
-const express = require('express');
-const path = require('path');
-const favicon = require('serve-favicon');
-const logger = require('morgan');
-const i18n = require("i18n");
-const parseAcceptLanguage = require('parse-accept-language');
+const express = require('express')
+const path = require('path')
+const favicon = require('serve-favicon')
+const logger = require('morgan')
 
-const config = require('./config');
-const routes = require('./routes/index');
+const config = require('./config')
+const routes = require('./routes/index')
 const events = require('./routes/events')
-const app = express();
-app.set('trust proxy', 'loopback, linklocal, uniquelocal')
+const app = express()
 
-const Twig = require('twig');
-Twig.cache(config.cacheTemplates)
-Twig.extendFunction("env", (value) => process.env[value]);
-Twig.extendFunction("log", console.log);
-Twig.extendFunction("__", function () {
-    return i18n.__(...arguments);
-});
+app.set('trust proxy', 'loopback, linklocal, uniquelocal')
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'twig')
 
 function requireHTTPS(req, res, next) {
     // The 'x-forwarded-proto' check is for Heroku
@@ -27,27 +20,12 @@ function requireHTTPS(req, res, next) {
     next();
 }
 
-i18n.configure({
-    locales: ['ru', 'en'],
-    defaultLocale: "en",
-    autoReload: process.env.NODE_ENV === 'development',
-    directory: __dirname + '/locales'
-});
-
-i18n.setLocale(config.locale);
-
-// default: using 'accept-language' header to guess language settings
-app.use(i18n.init);
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'twig');
-app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 if(config.requireHttps) {
     app.use(requireHTTPS);
 }
 
+app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(config.eventsPath, events)
 app.use(config.subpath, routes)
