@@ -186,6 +186,21 @@ as reCAPTCHA v3 type.
 Set "Site key" as `recaptchaSiteKey` or `RECAPTCHA_SITE`,
 and "Secret key" as `recaptchaSecretKey` or `RECAPTCHA_SECRET`.
 
+## twilio
+
+Dev mode: `TWILIO_DEBUG=true` to avoid talking to twilio for local debugging
+
+Prod config:
+* [create api keys](https://www.twilio.com/console/project/api-keys), configure `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN`
+* [create verify service](https://www.twilio.com/console/verify/services), configure as `TWILIO_VERIFY_SERVICE_ID`
+* create rate limits:
+    * `twilio api:verify:v2:services:rate-limits:create --service-sid $TWILIO_VERIFY_SERVICE_ID --unique-name ratelimit` 
+    * `twilio api:verify:v2:services:rate-limits:buckets:create --service-sid $TWILIO_VERIFY_SERVICE_ID --rate-limit-sid RKcf669f219bde259fee01c587403587b6 --max <SMS_SENT> --interval <SECONDS>`
+* [create sync servcie](https://www.twilio.com/console/sync/services), configure `TWILIO_SYNC_SERVICE_ID`
+* create phone and ban maps for `TWILIO_SYNC_MAP_ID` and `TWILIO_SYNC_BAN_MAP_ID` respectively:
+    `twilio api:sync:v1:services:maps:create --service-id $TWILIO_SYNC_SERVICE_ID`
+
+
 ## Associate fork with heroku
 If you use the "Deploy to Heroku" button and want to modify your App you should
 fork this project. After forking and making changes you should associate your
