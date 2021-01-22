@@ -3,14 +3,39 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const parseAcceptLanguage = require('parse-accept-language')
 const Twig = require('twig')
+const crypto = require('crypto')
 const i18n = require("i18n")
+const config = require("../config")
+const basicAuth = require('express-basic-auth')
+
+// use https://emn178.github.io/online-tools/sha256.html to generate hashes
+const authorizer = function (username, password) {
+  const auth = JSON.parse(config.realmJson)
+  const pwd = crypto.createHash('sha256').update(password).digest('hex')
+
+  for (let i = 0; i < auth.length; i++) {
+    const entry = auth[i]
+    if (entry.username === username && basicAuth.safeCompare(pwd, entry.password)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+const authOptions = {
+  authorizer: authorizer,
+  challenge: true,
+};
 
 const indexAction = require("../actions/index")
 const {oauthAction, oauthBotAction} = require("../actions/oauth")
 const doInviteAction = require("../actions/do-invite")
 const identityCheckAction = require("../actions/identity-check")
+const whistleblowerAction = require("../actions/whistleblower")
+const whistleblowerAdminAction = require("../actions/whistleblower-admin/index")
+const whistleblowerAdminViewAction = require("../actions/whistleblower-admin/view")
 const badgeAction = require("../actions/badge")
-const config = require("../config")
 
 const router = express.Router()
 
@@ -65,6 +90,11 @@ router.use(bodyParser.urlencoded({ extended: false }))
 router.get('/', indexAction)
 router.get('/oauth', oauthAction)
 router.get('/oauthBot', oauthBotAction)
+router.get('/whistleblower', whistleblowerAction)
+router.post('/whistleblower', whistleblowerAction)
+router.get('/whistleblower/admin', basicAuth(authOptions), whistleblowerAdminAction)
+router.get('/whistleblower/admin/:id', basicAuth(authOptions), whistleblowerAdminViewAction)
+router.post('/whistleblower/admin/:id', basicAuth(authOptions), whistleblowerAdminViewAction)
 router.post('/do-invite', doInviteAction)
 router.post('/identity-check', identityCheckAction)
 router.get('/badge.svg', badgeAction)

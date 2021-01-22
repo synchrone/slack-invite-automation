@@ -10,9 +10,14 @@ services:
       - "9229:9229"
     volumes:
       - .:/slack-invite-automation
-    networks:
-      - bridge
 
-networks:
-  bridge:
-    driver: bridge
+  db:
+    image: postgres:9.6
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=insights
+    ports:
+      - "127.0.0.1:5432:5432"

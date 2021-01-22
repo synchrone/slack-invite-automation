@@ -1,0 +1,164 @@
+{% extends '_layouts/base.twig' %}
+
+{% block title %}{{ __('%s — Whistleblower', env('COMMUNITY_NAME')) }}{% endblock %}
+
+{% block body %}
+    <div class="container mx-auto overflow-y-auto mt-10 mb-5">
+        {% if isSuccess %}
+            <div id="flash-message-container" class="flash text-white px-6 py-4 border-0 rounded relative mb-4 bg-teal-500">
+            <span class="text-xl inline-block mr-5 align-middle">
+            <i class="fas fa-bell" ></i>
+            </span>
+                <span class="inline-block align-middle mr-8">
+                <b class="capitalize">{{ __('Success!') }}</b> {{ __('We have successfully received your submission.') }}
+            </span>
+                <a href="/whistleblower" style="text-decoration: none;" class="absolute bg-transparent text-2xl font-semibold leading-none right-0 top-0 mt-4 mr-6 outline-none focus:outline-none">
+                    <span id="flash-message" class="flash__cross">×</span>
+                </a>
+            </div>
+        {% endif %}
+
+        <div class="flex flex-wrap justify-center mb-5">
+            <div class="w-full overflow-hidden xl:w-2/5 bg-white rounded-lg rounded-tr-none rounded-br-none">
+                <div class="px-8 mb-4 text-left">
+                    <div class="mb-4 text-left">
+                        <h3 id="join-us" class="pt-4 mb-2 text-2xl text-center">{{ __('How it works & Policy') }}</h3>
+                        <p class="text-lg text-gray-700">
+                            <strong>{{ __('What\'s this?') }}</strong>
+                            <ul class="mb-4 text-sm text-gray-700 list-disc ml-5">
+                                <li>{{ __('This is a one way anonymous whistleblower communication channel.') }}</li>
+                            </ul>
+                        </p>
+                        <p class="text-lg text-gray-700">
+                            <strong>{{ __('When should I use it?') }}</strong>
+                            <ul class="mb-4 text-sm text-gray-700 list-disc ml-5">
+                                <li>{{ __('Is your department going to be entirely fired? There you go.') }}</li>
+                            </ul>
+                        </p>
+                        <p class="text-lg text-gray-700">
+                            <strong>{{ __('Will I see replies & How will you contact me?') }}</strong>
+                            <ul class="mb-4 text-sm text-gray-700 list-disc ml-5">
+                                <li>{{ __("In the %s channel you could see replies, but we don't forward any kind of your identity, and it's your responsibility to not disclosure yourself in the conversations.", '<strong>#insights</strong>') }}</li>
+                                <li>{{ __("We won't be able to contact you for any further details, questions, etc. You won't be able to edit your submission or delete it.") }}</li>
+                            </ul>
+                        </p>
+                        <p class="text-lg text-gray-700">
+                            <strong>{{ __('What steps are you taking to ensure my privacy?') }}</strong>
+                            <ul class="mb-4 text-sm text-gray-700 list-disc ml-5">
+                                <li>{{ __('We do not store IP address, cookies, device fingerprints etc.') }}</li>
+                                <li>{{ __('Different people write texts in the different style, we will try to fix it as much as we can. After submission, text gets automatically post-processed to make it look similar to all the others. We add dots, capital letters in the beginning of the sentences, "&dash;" become "&mdash;" and so on.') }}</li>
+                            </ul>
+                        </p>
+                        <p class="text-lg text-gray-700">
+                            <strong>{{ __('How to write good message?') }}</strong>
+                            <ul class="mb-4 text-sm text-gray-700 list-disc ml-5">
+                                <li>{{ __('Do not include any contact details into the text, they will be deleted on the review.') }}</li>
+                                <li>{{ __('Do not include any PII (Personally Identifiable Information) data into the text, it will be deleted.') }}</li>
+                                <li>{{ __('Do not include hyperlinks.') }}</li>
+                            </ul>
+                        </p>
+                        <p class="text-lg text-gray-700">
+                            <strong>{{ __('How long should I wait until it gets published?') }}</strong>
+                            <ul class="mb-4 text-sm text-gray-700 list-disc ml-5">
+                                <li>{{ __('To increase the level of privacy we publish it randomly, not immediately.') }}</li>
+                                <li>{{ __('If it was not published for quite a long time then it did not pass the fact-check and was declined.') }}</li>
+                            </ul>
+                        </p>
+                        <p class="text-lg text-gray-700">
+                            <strong>{{ __('Liability') }}</strong>
+                            <ul class="mb-4 text-sm text-gray-700 list-disc ml-5">
+                                <li>{{ __('We review every submission to prevent harmful activity.') }}</li>
+                                <li>{{ __('We are not responsible for the quality, safety or legality of the content posted.') }}</li>
+                                <li>{{ __('We make no representations about the accuracy, reliability, completeness, or timeliness of any content.') }}</li>
+                                <li>{{ __('We cannot guarantee and do not promise any specific results from use of this service.') }}</li>
+                            </ul>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full overflow-hidden xl:w-3/5 bg-white rounded-lg rounded-tl-none rounded-bl-none">
+                <div class="px-8 mb-4 text-left">
+                    <div class="mb-4 text-left">
+                        <h3 id="join-us" class="pt-4 mb-2 text-2xl text-center">{{ __('Anonymous whistleblower form') }}</h3>
+                        <p class="mb-4 text-sm text-gray-700">
+                            {{ __('Post here an insight to let people discuss it in the %s channel in the Germany RU Slack.', '<strong>#insights</strong>') }}
+                        </p>
+                    </div>
+
+                    <form method="POST" action="/whistleblower{% if captchaV2 %}?gc2=1{% endif %}" id="whistleblower-form">
+                        <div class="flex flex-wrap overflow-hidden">
+                            <div class="w-full overflow-hidden w-full lg:pr-5 pb-5">
+                                <label class="block mb-1" for="form-text">{{ __('Text') }}</label>
+                                <textarea style="height: 350px" rows="10" required name="text" class="w-full h-10 px-3 text-base placeholder-gray-600{% if isFailedText %} border border-red-700{% endif%} rounded-lg border" id="form-text">{{ text|e }}</textarea>
+                                {% if isFailedText %}
+                                    <span class="text-xs text-red-700">{{ __(messageText) }}</span>
+                                {% endif %}
+                            </div>
+                            {% if captchaV2 %}
+                                <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2 lg:pr-5 pb-5">
+                                    <label class="block mb-1" for="form-phone">{{ __('reCAPTCHA') }}</label>
+                                    <div id="g-recaptcha"></div>
+                                </div>
+                            {% endif %}
+                            <div class="w-full overflow-hidden w-full lg:pr-5">
+                                <style>
+                                    input:checked + svg {
+                                        display: block;
+                                    }
+                                </style>
+                                <label class="flex justify-start items-start">
+                                    <div id="form-terms-checkbox" class="{% if isFailedTerms %}border-red-700 {% endif%}bg-white border-2 rounded border-gray-400 w-6 h-6 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500">
+                                        <input name="terms" type="hidden" value="0">
+                                        <input name="terms" value="1" type="checkbox" class="opacity-0 absolute">
+                                        <svg class="fill-current hidden w-4 h-4 text-indigo-500 pointer-events-none" viewBox="0 0 20 20"><path d="M0 11l2-2 5 5L18 3l2 2L7 18z"/></svg>
+                                    </div>
+                                    <div id="form-terms-label" class="select-none text-sm {% if isFailedTerms %}text-red-700{% else %}text-gray-700{% endif %} mt-1">{{ __('I have read "How it works & Policy" and I understand that provided information will become publicly available in the Germany RU Slack for discussions after review.') }}</div>
+                                </label>
+                            </div>
+                            <div class="w-full overflow-hidden lg:w-1/2 xl:w-1/2 lg:pr-5">
+                                <button type="submit" style="margin-top: 1.8rem;" {% if not captchaV2 %}data-sitekey="{{ env('RECAPTCHA_SITE') }}" data-callback="onPhoneVerify" data-action="verify"{% else %}data-callback="onVerifyCallback"{% endif %} class="{% if not captchaV2 %}g-recaptcha{% endif %} w-full h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">{{ __('Submit anonymously') }}</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="pb-10"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if captchaV2 %}
+        <script type="text/javascript">
+            var response = null;
+            var onVerifyCallback = function(data) {
+                response = data;
+            };
+            var onloadCallback = function() {
+                grecaptcha.render('g-recaptcha', {
+                    'sitekey': '{{ env('RECAPTCHA_SITE_V2') }}',
+                    'callback' : onVerifyCallback,
+                });
+            };
+
+            document.getElementById("whistleblower-form").addEventListener("submit", function(evt) {
+                evt.preventDefault();
+
+                if (/HeadlessChrome/i.test(navigator.userAgent) || navigator.webdriver) {return}
+                document.getElementById("whistleblower-form").submit();
+            });
+        </script>
+    {% else %}
+        <script>
+            function onPhoneVerify(token) {
+                if (/HeadlessChrome/i.test(navigator.userAgent) || navigator.webdriver) {return}
+                if (token) { document.getElementById("whistleblower-form").submit(); }
+            }
+        </script>
+    {% endif %}
+
+    <script>
+        document.getElementById('form-terms-checkbox').addEventListener("click", function(evt) {
+            var checkbox = document.getElementById("mobile-menu");
+
+            checkbox.classList.remove("border-red-700");
+        });
+    </script>
+{% endblock %}
