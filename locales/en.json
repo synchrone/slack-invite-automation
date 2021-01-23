@@ -56,5 +56,6 @@
 	"The Email is required": "The Email is required",
 	"The Full name is required": "The Full name is required",
 	"Please enter a valid Email": "Please enter a valid Email",
-	"You are banned in %s until %s": "You are banned in %s until %s"
+	"You are banned in %s until %s": "You are banned in %s until %s",
+	"You are banned in %s": "You are banned in %s"
 }
