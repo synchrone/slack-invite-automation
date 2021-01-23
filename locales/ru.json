@@ -56,5 +56,7 @@
 	"reCAPTCHA": "reCAPTCHA",
 	"Success!": "Успех!",
 	"Check your email for an invite from Slack.": "Проверьте вашу электронную почту для приглашения в чат.",
-	"Please enter a valid Email": "Введите валидный адрес электронной почты"
+	"Please enter a valid Email": "Введите валидный адрес электронной почты",
+	"You are banned in %s until %s": "You are banned in %s until %s",
+	"You are banned in %s": "You are banned in %s"
 }
