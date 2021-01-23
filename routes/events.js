@@ -51,8 +51,8 @@ async function unban({user, channel}){
 }
 
 async function isModerator({user, channel}){
-  let chan = config.moderators[channel]
-  return chan === user || chan.indexOf(user) > -1
+  const chan = config.moderators[channel]
+  return chan && (chan === user || chan.indexOf(user) > -1)
 }
 
 async function banCommand(req, res){
