@@ -59,11 +59,14 @@ async function isModerator({user, channel}){
   return chan && (chan === user || chan.indexOf(user) > -1)
 }
 function sendBanMessage(user, channel, bannedUntil){
+  const fallbackTs = DateTime.fromMillis(bannedUntil).toLocaleString(DateTime.DATETIME_SHORT)
+  const ts = Math.ceil(bannedUntil / 1000)
+
   return slack.chat.postMessage({
     as_user: false,
     channel: user,
     text:  bannedUntil ?
-      __('You are banned in %s until %s',`<#${channel}>`, DateTime.fromMillis(bannedUntil).toLocaleString(DateTime.DATETIME_SHORT)) :
+      __('You are banned in %s until %s',`<#${channel}>`, `<!date^${ts}^{date} {time_secs}|${fallbackTs}>`) :
       __('You are banned in %s',`<#${channel}>`)
   })
 }
@@ -90,7 +93,7 @@ async function banCommand(req, res){
   for(const userIdMatch of text.matchAll(/<@(U[0-9A-Z]+).*>/i)){
     const user = userIdMatch[1]
     if(text.indexOf('remove') === -1) {
-      const bannedUntil = DateTime.local().plus(banDuration).toMillis()
+      const bannedUntil = DateTime.utc().plus(banDuration).toMillis()
       await ban({user, channel: channel_id}, bannedUntil)
       try {
         await slack.conversations.kick({channel: channel_id, user: user})
