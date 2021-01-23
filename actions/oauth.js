@@ -27,6 +27,6 @@ function oauthActionFactory(path, extra) {
 }
 
 module.exports = {
-    oauthAction: oauthActionFactory('/oauth', 'scope=client&user_scope=admin'),
-    oauthBotAction: oauthActionFactory('/oauthBot', 'scope=admin%2Cbot%2Cchannels%3Aread%2Cgroups%3Aread%2Cchannels%3Ahistory')
+    oauthAction: oauthActionFactory('oauth', 'scope=client&user_scope=admin'),
+    oauthBotAction: oauthActionFactory('oauthBot', 'scope=admin%2Cbot%2Cchannels%3Aread%2Cgroups%3Aread%2Cchannels%3Ahistory')
 }
