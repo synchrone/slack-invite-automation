@@ -80,7 +80,7 @@ async function banCommand(req, res){
     return respond('you cannot do that')
   }
 
-  const durationMatch = text.match(/(P[0-9A-Z]{2,})/)
+  const durationMatch = text.match(/\s+(P[0-9A-Z]{2,})/)
   const parsedDuration = durationMatch ? durationMatch[1] : 'P1W';
   const banDuration = Duration.fromISO(parsedDuration)
   if(banDuration.invalid){
