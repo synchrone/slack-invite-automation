@@ -72,9 +72,10 @@ async function banCommand(req, res){
   }
 
   const durationMatch = text.match(/(P[0-9A-Z]{2,})/)
-  const banDuration = Duration.fromISO(durationMatch ? durationMatch[1] : 'P1W')
+  const parsedDuration = durationMatch ? durationMatch[1] : 'P1W';
+  const banDuration = Duration.fromISO(parsedDuration)
   if(banDuration.invalid){
-    return respond('ban duration must be ISO8601')
+    return respond('ban duration must be ISO8601, we got '+parsedDuration)
   }
 
   for(const userIdMatch of text.matchAll(/<@(U[0-9A-Z]+).*>/i)){
