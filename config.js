@@ -1,3 +1,4 @@
+const querystring = require("querystring");
 module.exports = {
   env: process.env.APP_ENV || 'dev',
   // your community or team name to display on join page.
@@ -43,5 +44,6 @@ module.exports = {
   subpath: process.env.SUBPATH || "/",
   eventsPath: process.env.SUBPATH || "/events",
   requireHttps: process.env.REQUIRE_HTTPS || '',
-  cacheTemplates: process.env.CACHE_TEMPLATES === 'true'
+  cacheTemplates: process.env.CACHE_TEMPLATES === 'true',
+  moderators: querystring.parse(process.env.MODERATORS)
 };
