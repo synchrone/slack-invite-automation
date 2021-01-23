@@ -58,6 +58,15 @@ async function isModerator({user, channel}){
   const chan = config.moderators[channel]
   return chan && (chan === user || chan.indexOf(user) > -1)
 }
+function sendBanMessage(user, channel, bannedUntil){
+  return slack.chat.postMessage({
+    as_user: false,
+    channel: user,
+    text:  bannedUntil ?
+      __('You are banned in %s until %s',`<#${channel}>`, DateTime.fromMillis(bannedUntil).toLocaleString(DateTime.DATETIME_SHORT)) :
+      __('You are banned in %s',`<#${channel}>`)
+  })
+}
 
 async function banCommand(req, res){
   const respond = t => res.status(200).send({"response_type": "ephemeral", "text": t})
@@ -81,7 +90,8 @@ async function banCommand(req, res){
   for(const userIdMatch of text.matchAll(/<@(U[0-9A-Z]+).*>/i)){
     const user = userIdMatch[1]
     if(text.indexOf('remove') === -1) {
-      await ban({user, channel: channel_id}, DateTime.local().plus(banDuration).toMillis())
+      const bannedUntil = DateTime.local().plus(banDuration).toMillis()
+      await ban({user, channel: channel_id}, bannedUntil)
       try {
         await slack.conversations.kick({channel: channel_id, user: user})
       }catch (e) {
@@ -89,6 +99,7 @@ async function banCommand(req, res){
           throw e
         }
       }
+      await sendBanMessage(user, channel_id, bannedUntil)
     }else{
       await unban({user, channel: channel_id})
       await slack.conversations.invite({channel: channel_id, users: user})
@@ -100,16 +111,10 @@ async function banCommand(req, res){
 
 slackEventAdapter.on('member_joined_channel', async e => {
   let bannedUntil = await getBan(e)
-  if(bannedUntil !== false){
+  if(bannedUntil !== false && bannedUntil > +new Date){
     try {
       await slack.conversations.kick({channel: e.channel, user: e.user})
-      await slack.chat.postMessage({
-        as_user: false,
-        channel: e.user,
-        text:  bannedUntil ?
-          __('You are banned in %s until %s',`<#${e.channel}>`, new Date(bannedUntil).toLocaleString()) :
-          __('You are banned in %s',`<#${e.channel}>`)
-      })
+      await sendBanMessage(e.user, e.channel, bannedUntil)
     }catch(e){
       console.log(e)
     }
