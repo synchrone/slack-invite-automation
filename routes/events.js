@@ -51,6 +51,10 @@ async function unban({user, channel}){
 }
 
 async function isModerator({user, channel}){
+  if(config.globalModerators.indexOf(user) > -1){
+    return true
+  }
+
   const chan = config.moderators[channel]
   return chan && (chan === user || chan.indexOf(user) > -1)
 }

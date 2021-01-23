@@ -45,5 +45,6 @@ module.exports = {
   eventsPath: process.env.SUBPATH || "/events",
   requireHttps: process.env.REQUIRE_HTTPS || '',
   cacheTemplates: process.env.CACHE_TEMPLATES === 'true',
+  globalModerators: (process.env.GLOBAL_MODERATORS || '').split(','),
   moderators: querystring.parse(process.env.MODERATORS)
 };
