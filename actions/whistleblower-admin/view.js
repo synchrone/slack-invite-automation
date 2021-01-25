@@ -24,16 +24,28 @@ module.exports = async function (req, res) {
 
             let trustMsg = null;
             if (trust === 1) {
-                trustMsg = i18n.__('Trusted Msg')
+                trustMsg = i18n.__({
+                    phrase: 'Trusted Msg',
+                    locale: 'ru'
+                })
             } else {
-                trustMsg = i18n.__('Unverified Msg')
+                trustMsg = i18n.__({
+                    phrase: 'Unverified Msg',
+                    locale: 'ru'
+                })
             }
 
             let typeMsg = null;
             if (type === 0) {
-                typeMsg = i18n.__('Anonymous question')
+                typeMsg = i18n.__({
+                    phrase: 'Anonymous question',
+                    locale: 'ru'
+                })
             } else if (type === 1) {
-                typeMsg = i18n.__("Leak. Trust level: *%s*", trustMsg)
+                typeMsg = i18n.__({
+                    phrase: 'Leak. Trust level: *%s*',
+                    locale: 'ru'
+                }, trustMsg)
             }
 
             const mrkdwn = eol.split(text).map(chunk => {
