@@ -76,6 +76,7 @@ module.exports = async function (req, res) {
                 }
 
                 slack.chat.postMessage({
+                    username: 'Anonymous',
                     channel: config.slackInsightsChannel,
                     blocks: blocks
                 });
