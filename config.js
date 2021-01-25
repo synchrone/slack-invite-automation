@@ -51,6 +51,7 @@ module.exports = {
   databaseHost: process.env.DATABASE_HOST || 'db',
   databaseUser: process.env.DATABASE_USER || 'postgres',
   databasePassword: process.env.DATABASE_PASSWORD || 'password',
+  databaseName: process.env.DATABASE_NAME || 'insights',
   realmJson: process.env.REALM_JSON,
   globalModerators: (process.env.GLOBAL_MODERATORS || '').split(','),
   moderators: querystring.parse(process.env.MODERATORS)
