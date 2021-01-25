@@ -6,7 +6,7 @@ const { encrypt } = require('./../lib/crypto');
 const {
     whitespacePipe, separatorPipe, dashPipe,
     commaPipe, bracketsPipe, dotNewlinePipe, excessiveNewlinePipe,
-    finalize
+    capitalizePipe, finalize
 } = require('./../lib/text-analyzer');
 
 module.exports = async function (req, res) {
@@ -62,8 +62,16 @@ module.exports = async function (req, res) {
             ptr = input_string + contents.length
         })
 
+        if (stack.length === 0) {
+            stack.push({
+                'separator': '.',
+                'text': req.body['text'],
+            })
+        }
+
         const pipe = [
             separatorPipe,
+            capitalizePipe,
             whitespacePipe,
             dotNewlinePipe,
             bracketsPipe,
