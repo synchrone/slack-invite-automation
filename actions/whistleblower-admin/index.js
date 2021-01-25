@@ -4,7 +4,7 @@ const { render } = require('../../lib/render')
 const uuid = require('uuid');
 const { pool } = require('../../lib/pg')
 
-const { encrypt, decrypt } = require('../../lib/crypto');
+const { decrypt } = require('../../lib/crypto');
 
 module.exports = async function (req, res) {
     const page = req.query.page || 1;

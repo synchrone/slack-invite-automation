@@ -1,10 +1,8 @@
 const __ = require('i18n').__
 const {verifyRecaptcha, verifyRecaptcha2} = require("../lib/recaptcha")
-const config = require("../config")
-const eol = require('eol');
 const { render } = require('../lib/render')
 const { pool } = require('../lib/pg')
-const { encrypt, decrypt } = require('./../lib/crypto');
+const { encrypt } = require('./../lib/crypto');
 const {
     whitespacePipe, separatorPipe, dashPipe,
     commaPipe, bracketsPipe, dotNewlinePipe, excessiveNewlinePipe,

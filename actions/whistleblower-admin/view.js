@@ -3,7 +3,6 @@ const config = require("../../config")
 const { render } = require('../../lib/render')
 const { slack } = require('../../lib/slack')
 const { pool } = require('../../lib/pg')
-const uuid = require('uuid');
 const eol = require('eol');
 
 const { encrypt, decrypt } = require('../../lib/crypto');
