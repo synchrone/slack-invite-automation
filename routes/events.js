@@ -144,6 +144,7 @@ slackEventAdapter.on('message', async e => {
     await slack.chat.postMessage({
       channel: e.user,
       text: __({
+        username: 'Anonymous',
         phrase: 'Hi, in the <#%s> channel special rules are apply: you can only leave messages in threads. Messages at the first level are automatically deleted. Thank you for your understanding.',
         locale: 'ru'
       }, config.slackInsightsChannel)
