@@ -3,15 +3,13 @@ const bodyParser = require("body-parser")
 const __ = require('i18n').__
 const { createEventAdapter } = require('@slack/events-api')
 const {DateTime, Duration} = require("luxon")
-
 const config = require("../config")
+
 const {slack} = require("../lib/slack")
 const {sync} = require('../lib/verification')
 
-
 const bodyUrlencoded = bodyParser.urlencoded({ extended: false })
 const banMapItems = sync.syncMaps(config.twilioSyncBanMapId).syncMapItems
-
 const slackEventAdapter = createEventAdapter(config.slackSigningSecret, {includeBody: true});
 
 function banKey({channel, user}){
@@ -124,7 +122,40 @@ slackEventAdapter.on('member_joined_channel', async e => {
   }
 })
 
+slackEventAdapter.on('message', async e => {
+  if (config.slackInsightsChannel === null) {
+    throw new Error('Slack channel is not defined.');
+  }
+
+  if (e.channel !== config.slackInsightsChannel) {
+    return;
+  }
+
+  if (e.subtype && ['message_deleted', 'message_changed', 'channel_leave', 'channel_join', 'bot_message'].includes(e.subtype)) {
+    return;
+  }
+
+  if (e.thread_ts) { // thread
+    return;
+  }
+
+  try {
+    await slack.chat.delete({ ts: e.event_ts, channel: e.channel });
+    await slack.chat.postMessage({
+      channel: e.user,
+      text: __({
+        phrase: 'Hi, in the <#%s> channel special rules are apply: you can only leave messages in threads. Messages at the first level are automatically deleted. Thank you for your understanding.',
+        locale: 'ru'
+      }, config.slackInsightsChannel)
+    });
+  } catch (e) {
+
+  }
+})
+
 const router = express.Router()
+
 router.post('/', slackEventAdapter.expressMiddleware())
 router.post('/ban', bodyUrlencoded, banCommand)
+
 module.exports = router

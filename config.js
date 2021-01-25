@@ -1,4 +1,5 @@
 const querystring = require("querystring");
+
 module.exports = {
   env: process.env.APP_ENV || 'dev',
   // your community or team name to display on join page.
@@ -15,6 +16,7 @@ module.exports = {
   slackClientId: process.env.SLACK_CLIENT_ID,
   slackClientSecret: process.env.SLACK_CLIENT_SECRET,
   slackSigningSecret: process.env.SLACK_SIGNING_SECRET,
+  slackInsightsChannel: process.env.SLACK_INSIGHTS_CHANNEL,
   inviterUrl: process.env.INVITER_URL || 'http://localhost:3000',
   // an optional security measure - if it is set, then that token will be required to get invited.
   inviteToken: process.env.INVITE_TOKEN || null,
@@ -45,6 +47,11 @@ module.exports = {
   eventsPath: process.env.SUBPATH || "/events",
   requireHttps: process.env.REQUIRE_HTTPS || '',
   cacheTemplates: process.env.CACHE_TEMPLATES === 'true',
+  cryptoSecretKey: process.env.CRYPTO_SECRET_KEY || '=CJ=et7JWe%EfCAbr3gSD8+4?QT?5gSz',
+  databaseHost: process.env.DATABASE_HOST || 'db',
+  databaseUser: process.env.DATABASE_USER || 'postgres',
+  databasePassword: process.env.DATABASE_PASSWORD || 'password',
+  realmJson: process.env.REALM_JSON,
   globalModerators: (process.env.GLOBAL_MODERATORS || '').split(','),
   moderators: querystring.parse(process.env.MODERATORS)
 };
