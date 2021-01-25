@@ -1,3 +1,5 @@
+const querystring = require("querystring");
+
 module.exports = {
   env: process.env.APP_ENV || 'dev',
   // your community or team name to display on join page.
@@ -49,5 +51,6 @@ module.exports = {
   databaseHost: process.env.DATABASE_HOST || 'db',
   databaseUser: process.env.DATABASE_USER || 'postgres',
   databasePassword: process.env.DATABASE_PASSWORD || 'password',
-  realmJson: process.env.REALM_JSON
+  realmJson: process.env.REALM_JSON,
+  moderators: querystring.parse(process.env.MODERATORS)
 };

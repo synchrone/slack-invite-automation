@@ -117,5 +117,7 @@
 	"Save": "Save",
 	"Anonymous question": "Anonymous question",
 	"Leak. Trust level: *%s*": "Leak. Trust level: *%s*",
-	"Hi, in the <#%s> channel special rules are apply: you can only leave messages in threads. Messages at the first level are automatically deleted. Thank you for your understanding.": "Hi, in the <#%s> channel special rules are apply: you can only leave messages in threads. Messages at the first level are automatically deleted. Thank you for your understanding."
+	"Hi, in the <#%s> channel special rules are apply: you can only leave messages in threads. Messages at the first level are automatically deleted. Thank you for your understanding.": "Hi, in the <#%s> channel special rules are apply: you can only leave messages in threads. Messages at the first level are automatically deleted. Thank you for your understanding.",
+	"You are banned in %s until %s": "You are banned in %s until %s",
+	"You are banned in %s": "You are banned in %s"
 }

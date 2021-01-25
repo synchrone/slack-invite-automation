@@ -117,5 +117,7 @@
 	"Leak. Trust level: *%s*": "Слив. Уровень доверия: *%s*",
 	"Hi, in the <#%s> channel special rules are apply: you can only leave messages in threads. Messages at the first level are automatically deleted. Thank you for your understanding.": "Привет, в канале <#%s> действуют особые правила: можно оставлять сообщения только в тредах. Сообщения первого уровня удаляются автоматически. Спасибо.",
 	"We have successfully received your submission.": "Мы успешно получили ваш запрос",
-	"Internal Server Error": "Произошла внутренняя ошибка сервера"
+	"Internal Server Error": "Произошла внутренняя ошибка сервера",
+	"You are banned in %s until %s": "You are banned in %s until %s",
+	"You are banned in %s": "You are banned in %s"
 }
