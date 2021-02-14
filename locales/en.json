@@ -51,7 +51,7 @@
 	"Language": "Language",
 	"Russian": "Russian",
 	"English": "English",
-	"reCAPTCHA check has failed": "reCAPTCHA check has failed",
+	"reCAPTCHA check has failed": "reCAPTCHA check has failed or your IP is masked",
 	"The SMS verification failed. Please check the code": "The SMS verification failed. Please check the code",
 	"The Email is required": "The Email is required",
 	"The Full name is required": "The Full name is required",
@@ -119,5 +119,7 @@
 	"Leak. Trust level: *%s*": "Leak. Trust level: *%s*",
 	"Hi, in the <#%s> channel special rules are apply: you can only leave messages in threads. Messages at the first level are automatically deleted. Thank you for your understanding.": "Hi, in the <#%s> channel special rules are apply: you can only leave messages in threads. Messages at the first level are automatically deleted. Thank you for your understanding.",
 	"You are banned in %s until %s": "You are banned in %s until %s",
-	"You are banned in %s": "You are banned in %s"
+	"You are banned in %s": "You are banned in %s",
+	"reCAPTCHA": "reCAPTCHA",
+	"Cannot send SMS verification to %s": "Cannot send SMS verification to %s"
 }

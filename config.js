@@ -34,6 +34,7 @@ module.exports = {
   twilioSyncMapId: process.env.TWILIO_SYNC_MAP_ID || null,
   twilioSyncBanMapId: process.env.TWILIO_SYNC_BAN_MAP_ID,
   twilioDebug: process.env.TWILIO_DEBUG || null,
+  allowedCountries: (process.env.ALLOWED_COUNTRIES || 'DE,AT,BE,CZ,DK,FR,LU,NL,PL,CH').split(','),
   ipLookup: process.env.IP_LOOKUP,
   hashing: {
     timeCost: 300,

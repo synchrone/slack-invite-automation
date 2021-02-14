@@ -4,6 +4,16 @@ const {verifyRecaptcha, verifyRecaptcha2} = require("../lib/recaptcha")
 const { render } = require('../lib/render')
 
 module.exports = async function (req, res) {
+    if (req.body.phone === undefined || !req.body.phone) {
+        return render(res, 'index', {
+            message: __('The phone number should not be empty'),
+            isFailed: true,
+            captchaV2: (req.query.gc2 !== undefined && req.query.gc2)
+        })
+    }
+
+    const phone = req.body.phone.replace(/[^0-9+]/g, '')
+
     const ip = req.ip
     const isLocal = req.socket.localAddress === ip
     const safeIp = isLocal || await ipIsSafe(ip)
@@ -18,29 +28,12 @@ module.exports = async function (req, res) {
     if (!safeIp || !captchaOk) {
         console.log('security check failed', {safeIp, captchaOk})
         return render(res, 'index', {
-            message: __('reCAPTCHA check has failed'),
+            message: __('reCAPTCHA check has failed or your IP is masked'),
             isFailed: true,
+            phone_prefill: phone,
             captchaV2: !captchaOk,
         })
     }
-
-    if (req.body.phone === undefined || !req.body.phone) {
-        return render(res, 'index', {
-            message: 'The phone number should not be empty',
-            isFailed: true,
-            captchaV2: (req.query.gc2 !== undefined && req.query.gc2)
-        })
-    }
-
-    if (!/^\+49\s*[(]?\d{2,}[)]?[-\s\.]?\d{2,}?[-\s\.]?\d{2,}[-\s\.]?\d{0,9}$/im.test(req.body.phone)) {
-        return render(res, 'index', {
-            message: __('The entered phone number has invalid format. Please use +49XXXXXXXXXXX'),
-            isFailed: true,
-            captchaV2: (req.query.gc2 !== undefined && req.query.gc2)
-        })
-    }
-
-    const phone = req.body.phone.replace(/[^0-9+]/g, '')
 
     const isRegistered = await phoneIsRegistered(phone)
     const smsSent = await sendVerification(phone, {ratelimit: ip});
@@ -51,6 +44,7 @@ module.exports = async function (req, res) {
         render(res, 'index', {
             message: __('Cannot send SMS verification to %s',  phone),
             isFailed: true,
+            phone_prefill: phone,
             captchaV2: (req.query.gc2 !== undefined && req.query.gc2)
         })
     }
